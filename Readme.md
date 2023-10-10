@@ -1,7 +1,7 @@
 # Личный проект «Шесть городов»
 
 * Студент: [Александр Гуринович](https://up.htmlacademy.ru/react/14/user/1874477).
-* Наставник: `Неизвестно`.
+* Наставник: [Arthur Litovko](https://htmlacademy.ru/profile/id6927).
 
 ---
 

@@ -1,16 +1,37 @@
-import Card from '../components/card';
-import HeaderMain from '../components/header-main';
+import { useEffect, useState } from 'react';
+import Header from '../components/header';
+import OffersList from '../components/offers-list';
+import { ServerOffer } from '../types/offer';
+import classnames from 'classnames';
+import { Link } from 'react-router-dom';
 
 interface MainScreenProps {
-  cardsCount: number;
+  offers: ServerOffer[];
 }
 
-function MainScreen ({cardsCount}: MainScreenProps): JSX.Element {
-  const cardArray = Array.from({ length: cardsCount }, (_, index: number) => index);
+function MainScreen({ offers }: MainScreenProps): JSX.Element {
+  const [selectedCity, setSelectedCity] = useState<string>('Amsterdam');
+  const [filteredOffers, setFilteredOffers] = useState<ServerOffer[]>([]);
+
+  const createFilteredOffers = (city: string, allOffers: ServerOffer[]) => {
+    const newFilteredOffers = allOffers.filter(
+      (offer) => offer.city.name === city
+    );
+    setFilteredOffers(newFilteredOffers);
+  };
+
+  const handleCityClick = (city: string) => {
+    setSelectedCity(city);
+    createFilteredOffers(city, offers);
+  };
+
+  useEffect(() => {
+    createFilteredOffers(selectedCity, offers);
+  }, [selectedCity, offers]);
 
   return (
     <div className="page page--gray page--main">
-      <HeaderMain />
+      <Header />
 
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
@@ -18,71 +39,76 @@ function MainScreen ({cardsCount}: MainScreenProps): JSX.Element {
           <section className="locations container">
             <ul className="locations__list tabs__list">
               <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
+                <Link
+                  className={classnames('locations__item-link', 'tabs__item', {
+                    'tabs__item--active': selectedCity === 'Paris',
+                  })}
+                  onClick={() => handleCityClick('Paris')}
+                  to="#"
+                >
                   <span>Paris</span>
-                </a>
+                </Link>
               </li>
               <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
+                <Link
+                  className={classnames('locations__item-link', 'tabs__item', {
+                    'tabs__item--active': selectedCity === 'Cologne',
+                  })}
+                  onClick={() => handleCityClick('Cologne')}
+                  to="#"
+                >
                   <span>Cologne</span>
-                </a>
+                </Link>
               </li>
               <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
+                <Link
+                  className={classnames('locations__item-link', 'tabs__item', {
+                    'tabs__item--active': selectedCity === 'Brussels',
+                  })}
+                  onClick={() => handleCityClick('Brussels')}
+                  to="#"
+                >
                   <span>Brussels</span>
-                </a>
+                </Link>
               </li>
               <li className="locations__item">
-                <a className="locations__item-link tabs__item tabs__item--active">
+                <Link
+                  className={classnames('locations__item-link', 'tabs__item', {
+                    'tabs__item--active': selectedCity === 'Amsterdam',
+                  })}
+                  onClick={() => handleCityClick('Amsterdam')}
+                  to="#"
+                >
                   <span>Amsterdam</span>
-                </a>
+                </Link>
               </li>
               <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
+                <Link
+                  className={classnames('locations__item-link', 'tabs__item', {
+                    'tabs__item--active': selectedCity === 'Hamburg',
+                  })}
+                  onClick={() => handleCityClick('Hamburg')}
+                  to="#"
+                >
                   <span>Hamburg</span>
-                </a>
+                </Link>
               </li>
               <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
+                <Link
+                  className={classnames('locations__item-link', 'tabs__item', {
+                    'tabs__item--active': selectedCity === 'Dusseldorf',
+                  })}
+                  onClick={() => handleCityClick('Dusseldorf')}
+                  to="#"
+                >
                   <span>Dusseldorf</span>
-                </a>
+                </Link>
               </li>
             </ul>
           </section>
         </div>
         <div className="cities">
-          <div className="cities__places-container container">
-            <section className="cities__places places">
-              <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{cardsCount} places to stay in Amsterdam</b>
-              <form className="places__sorting" action="#" method="get">
-                <span className="places__sorting-caption">Sort by</span>
-                <span className="places__sorting-type" tabIndex={0}>
-                Popular
-                  <svg className="places__sorting-arrow" width="7" height="4">
-                    <use xlinkHref="#icon-arrow-select"></use>
-                  </svg>
-                </span>
-                <ul className="places__options places__options--custom places__options--closed">
-                  <li className="places__option places__option--active" tabIndex={0}>Popular</li>
-                  <li className="places__option" tabIndex={0}>Price: low to high</li>
-                  <li className="places__option" tabIndex={0}>Price: high to low</li>
-                  <li className="places__option" tabIndex={0}>Top rated first</li>
-                </ul>
-              </form>
-
-              <div className="cities__places-list places__list tabs__content">
-                {cardArray.map((cardIndex) =>
-                  (
-                    <Card key={cardIndex} />
-                  ))}
-              </div>
-
-            </section>
-            <div className="cities__right-section">
-              <section className="cities__map map"></section>
-            </div>
-          </div>
+          <OffersList offers={filteredOffers} city={selectedCity} />
         </div>
       </main>
     </div>

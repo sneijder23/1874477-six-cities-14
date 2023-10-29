@@ -3,43 +3,35 @@ import { ServerOffer } from '../types/offer';
 import { capitalizeFirstLetter } from '../utils/utils';
 import { AppRoute } from '../const';
 import classNames from 'classnames';
+import { HTMLAttributes } from 'react';
 
 type CardProps = {
   offer: ServerOffer;
   handleFavoriteChange: (id: string, isFavorite: boolean) => void;
   onMouseEnter?: (id: string) => void;
   onMouseLeave?: () => void;
-  isMainScreen?: boolean;
-  isFavoriteScreen?: boolean;
-}
+  screenName?: string;
+} & Pick<HTMLAttributes<HTMLElement>, 'onMouseEnter' | 'onMouseLeave'>
 
-function Card({ offer, handleFavoriteChange, onMouseEnter, onMouseLeave, isMainScreen, isFavoriteScreen }: CardProps): JSX.Element {
+function Card({ offer, screenName, handleFavoriteChange, ...props }: CardProps): JSX.Element {
   const handleFavoriteClick = () => {
     const newIsFavorite = !offer.isFavorite;
     handleFavoriteChange(offer.id, newIsFavorite);
   };
 
-  const handleMouseEnter: React.MouseEventHandler<HTMLDivElement> = () => {
-    onMouseEnter?.(offer.id);
-  };
-
-  let eventHandlers = {};
-  if (isMainScreen) {
-    eventHandlers = {
-      onMouseOver: handleMouseEnter,
-      onMouseLeave: onMouseLeave
-    };
-  }
+  const cardClass = `${screenName}__card`;
+  const cardImageWrapper = `${screenName}__image-wrapper`;
+  const isFavoriteScreen = screenName === 'favorites';
 
   return (
-    <article {...eventHandlers} className={classNames({'cities__card': isMainScreen},{'favorites__card': isFavoriteScreen}, 'place-card')}>
+    <article className={`${cardClass} place-card`} {...props}>
       {offer.isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
       )}
-      <div className={classNames({'cities__image-wrapper': isMainScreen},{'favorites__image-wrapper': isFavoriteScreen}, 'place-card__image-wrapper')}>
-        <Link to={`${AppRoute.Offer.replace(':id', offer.id)}`}>
+      <div className={`${cardImageWrapper} place-card__image-wrapper`}>
+        <Link to={`${AppRoute.Offer}/${offer.id}`}>
           <img
             className="place-card__image"
             src={offer.previewImage}
@@ -75,7 +67,7 @@ function Card({ offer, handleFavoriteChange, onMouseEnter, onMouseLeave, isMainS
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`${AppRoute.Offer.replace(':id', offer.id)}`}>
+          <Link to={`${AppRoute.Offer}/${offer.id}`}>
             {offer.title}
           </Link>
         </h2>

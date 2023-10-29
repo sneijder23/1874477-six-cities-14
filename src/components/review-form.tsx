@@ -23,8 +23,8 @@ function ReviewForm(): JSX.Element {
     formRef.current?.reset();
   };
 
-  const isSubmitDisabled =
-    formData.review.length < 50 || formData.rating === '';
+  const isValidate =
+    formData.review.length < 50 || formData.review.length > 300 || formData.rating === '';
 
   return (
     <form onSubmit={hadleFormSubmit} ref={formRef} className="reviews__form form" action="#" method="post">
@@ -128,6 +128,7 @@ function ReviewForm(): JSX.Element {
         id="review"
         name="review"
         minLength={50}
+        maxLength={300}
         placeholder="Tell how was your stay, what you like and what can be improved"
       >
       </textarea>
@@ -140,7 +141,7 @@ function ReviewForm(): JSX.Element {
         <button
           className="reviews__submit form__submit button"
           type="submit"
-          disabled={isSubmitDisabled}
+          disabled={isValidate}
         >
           Submit
         </button>

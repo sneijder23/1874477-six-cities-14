@@ -12,21 +12,21 @@ type MapProps = {
   activePoint: string | null;
 }
 
+const defaultCustomIcon = leaflet.icon({
+  iconUrl: URL_MARKER_DEFAULT,
+  iconSize: [27, 39],
+  iconAnchor: [13, 39],
+});
+
+const currentCustomIcon = leaflet.icon({
+  iconUrl: URL_MARKER_CURRENT,
+  iconSize: [27, 39],
+  iconAnchor: [13, 39],
+});
+
 function Map({city, points, activePoint}: MapProps): JSX.Element {
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
-
-  const defaultCustomIcon = leaflet.icon({
-    iconUrl: URL_MARKER_DEFAULT,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-  });
-
-  const currentCustomIcon = leaflet.icon({
-    iconUrl: URL_MARKER_CURRENT,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-  });
 
   useEffect(() => {
     if (map) {
@@ -43,7 +43,7 @@ function Map({city, points, activePoint}: MapProps): JSX.Element {
           .addTo(map);
       });
     }
-  }, [map, points, activePoint, currentCustomIcon, defaultCustomIcon]);
+  }, [map, points, activePoint]);
   return (
     <section className="cities__map map" ref={mapRef}></section>
   );

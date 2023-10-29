@@ -43,7 +43,7 @@ function FavoriteList({ favoriteList }: { favoriteList: FavoriteListProps }): JS
             {offers.map((offer) => (
               <Card
                 key={offer.id}
-                isFavoriteScreen
+                screenName='favorites'
                 offer={offer}
                 handleFavoriteChange={handleFavoriteChange}
               />

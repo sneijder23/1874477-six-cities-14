@@ -5,7 +5,7 @@ const Comments: Review[] = [
     'id': '1',
     'rating': 4,
     'user': {
-      'avatarUrl': 'img/1.png',
+      'avatarUrl': 'https://14.react.pages.academy/static/avatar/2.jpg',
       'id': '1',
       'isPro': false,
       'name': 'Oliver.conner'

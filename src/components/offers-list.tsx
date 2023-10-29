@@ -24,13 +24,9 @@ function OffersList({ offers, city }: OffersListProps): JSX.Element {
     setOffersData(updatedOffers);
   };
 
-  const handleMouseEnter = (id: string) => {
-    setActiveOffersId(id);
-  };
+  const handleMouseEnter = (id: string) => setActiveOffersId(id);
 
-  const handleMouseLeave = () => {
-    setActiveOffersId(null);
-  };
+  const handleMouseLeave = () => setActiveOffersId(null);
 
   useEffect(() => {
     setOffersData(offers);
@@ -73,11 +69,11 @@ function OffersList({ offers, city }: OffersListProps): JSX.Element {
           {offersData.map((offer) => (
             <Card
               key={offer.id}
-              isMainScreen
+              screenName='cities'
               offer={offer}
               handleFavoriteChange={handleFavoriteChange}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
+              onMouseEnter={() => handleMouseEnter(offer.id)}
+              onMouseLeave={() => handleMouseLeave()}
             />
           ))}
         </div>

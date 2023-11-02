@@ -7,6 +7,7 @@ import { ServerOffer } from '../types/offer';
 import { City } from '../types/city';
 
 type MapProps = {
+  className: string;
   city: City;
   points: ServerOffer[];
   activePoint: string | null;
@@ -24,7 +25,7 @@ const currentCustomIcon = leaflet.icon({
   iconAnchor: [13, 39],
 });
 
-function Map({city, points, activePoint}: MapProps): JSX.Element {
+function Map({className, city, points, activePoint}: MapProps): JSX.Element {
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
@@ -45,7 +46,7 @@ function Map({city, points, activePoint}: MapProps): JSX.Element {
     }
   }, [map, points, activePoint]);
   return (
-    <section className="cities__map map" ref={mapRef}></section>
+    <section className={`${className} map`} ref={mapRef}></section>
   );
 }
 

@@ -24,7 +24,7 @@ function App({offers, reviews}: AppScreenProps): JSX.Element {
           <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}><Favorities offers={offers} /></PrivateRoute>
         }
         />
-        <Route path={AppRoute.Offer} element={<Offer offers={offers} reviews={reviews} />} />
+        <Route path={`${AppRoute.Offer}/:id`} element={<Offer offers={offers} reviews={reviews} />} />
         <Route path="*" element={<Error />} />
       </Routes>
     </BrowserRouter>

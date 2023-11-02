@@ -1,6 +1,6 @@
 import { City } from './types/city';
 
-export const CARDS_COUNT: number = 2;
+export const MAX_REVIEW_LENGHT: number = 10;
 
 export const APP_NAME: string = '6 cities';
 
@@ -18,7 +18,7 @@ export const OPEN_STREET_MAP =
 export const enum AppRoute {
   Root = '/',
   Login = '/login',
-  Offer = '/offer/:id',
+  Offer = '/offer',
   Favorites = '/favorites',
   Error = '/error'
 }

@@ -4,23 +4,25 @@ import OffersList from '../components/offers-list';
 import { ServerOffer } from '../types/offer';
 import classnames from 'classnames';
 import { Link } from 'react-router-dom';
+import { CITY_MAP } from '../const';
+import { City } from '../types/city';
 
 interface MainScreenProps {
   offers: ServerOffer[];
 }
 
 function MainScreen({ offers }: MainScreenProps): JSX.Element {
-  const [selectedCity, setSelectedCity] = useState<string>('Amsterdam');
+  const [selectedCity, setSelectedCity] = useState<City>(CITY_MAP['Amsterdam']);
   const [filteredOffers, setFilteredOffers] = useState<ServerOffer[]>([]);
 
-  const createFilteredOffers = (city: string, allOffers: ServerOffer[]) => {
+  const createFilteredOffers = (city: City, allOffers: ServerOffer[]) => {
     const newFilteredOffers = allOffers.filter(
-      (offer) => offer.city.name === city
+      (offer) => offer.city.name === city.name
     );
     setFilteredOffers(newFilteredOffers);
   };
 
-  const handleCityClick = (city: string) => {
+  const handleCityClick = (city: City) => {
     setSelectedCity(city);
     createFilteredOffers(city, offers);
   };
@@ -41,9 +43,9 @@ function MainScreen({ offers }: MainScreenProps): JSX.Element {
               <li className="locations__item">
                 <Link
                   className={classnames('locations__item-link', 'tabs__item', {
-                    'tabs__item--active': selectedCity === 'Paris',
+                    'tabs__item--active': selectedCity === CITY_MAP['Paris'],
                   })}
-                  onClick={() => handleCityClick('Paris')}
+                  onClick={() => handleCityClick(CITY_MAP['Paris'])}
                   to="#"
                 >
                   <span>Paris</span>
@@ -52,9 +54,9 @@ function MainScreen({ offers }: MainScreenProps): JSX.Element {
               <li className="locations__item">
                 <Link
                   className={classnames('locations__item-link', 'tabs__item', {
-                    'tabs__item--active': selectedCity === 'Cologne',
+                    'tabs__item--active': selectedCity === CITY_MAP['Cologne'],
                   })}
-                  onClick={() => handleCityClick('Cologne')}
+                  onClick={() => handleCityClick(CITY_MAP['Cologne'])}
                   to="#"
                 >
                   <span>Cologne</span>
@@ -63,9 +65,9 @@ function MainScreen({ offers }: MainScreenProps): JSX.Element {
               <li className="locations__item">
                 <Link
                   className={classnames('locations__item-link', 'tabs__item', {
-                    'tabs__item--active': selectedCity === 'Brussels',
+                    'tabs__item--active': selectedCity === CITY_MAP['Brussels']
                   })}
-                  onClick={() => handleCityClick('Brussels')}
+                  onClick={() => handleCityClick(CITY_MAP['Brussels'])}
                   to="#"
                 >
                   <span>Brussels</span>
@@ -74,9 +76,9 @@ function MainScreen({ offers }: MainScreenProps): JSX.Element {
               <li className="locations__item">
                 <Link
                   className={classnames('locations__item-link', 'tabs__item', {
-                    'tabs__item--active': selectedCity === 'Amsterdam',
+                    'tabs__item--active': selectedCity === CITY_MAP['Amsterdam'],
                   })}
-                  onClick={() => handleCityClick('Amsterdam')}
+                  onClick={() => handleCityClick(CITY_MAP['Amsterdam'])}
                   to="#"
                 >
                   <span>Amsterdam</span>
@@ -85,9 +87,9 @@ function MainScreen({ offers }: MainScreenProps): JSX.Element {
               <li className="locations__item">
                 <Link
                   className={classnames('locations__item-link', 'tabs__item', {
-                    'tabs__item--active': selectedCity === 'Hamburg',
+                    'tabs__item--active': selectedCity === CITY_MAP['Hamburg'],
                   })}
-                  onClick={() => handleCityClick('Hamburg')}
+                  onClick={() => handleCityClick(CITY_MAP['Hamburg'])}
                   to="#"
                 >
                   <span>Hamburg</span>
@@ -96,9 +98,9 @@ function MainScreen({ offers }: MainScreenProps): JSX.Element {
               <li className="locations__item">
                 <Link
                   className={classnames('locations__item-link', 'tabs__item', {
-                    'tabs__item--active': selectedCity === 'Dusseldorf',
+                    'tabs__item--active': selectedCity === CITY_MAP['Dusseldorf'],
                   })}
-                  onClick={() => handleCityClick('Dusseldorf')}
+                  onClick={() => handleCityClick(CITY_MAP['Dusseldorf'])}
                   to="#"
                 >
                   <span>Dusseldorf</span>

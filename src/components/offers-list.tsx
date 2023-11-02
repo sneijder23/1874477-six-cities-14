@@ -1,4 +1,4 @@
-import { CITY_MAP } from '../const';
+import { City } from '../types/city';
 import { ServerOffer } from '../types/offer';
 import Card from './card';
 import Map from './map';
@@ -6,13 +6,12 @@ import { useEffect, useState } from 'react';
 
 type OffersListProps = {
   offers: ServerOffer[];
-  city: string;
+  city: City;
 };
 
 function OffersList({ offers, city }: OffersListProps): JSX.Element {
   const [offersData, setOffersData] = useState(offers);
-  const [activeOffersId, setActiveOffersId] = useState<string | null>(null);
-  const cityMap = CITY_MAP[city];
+  const [activeOfferCard, setActiveOfferCard] = useState<string | null>(null);
 
   const handleFavoriteChange = (id: string, isFavorite: boolean) => {
     const updatedOffers = offersData.map((offer) => {
@@ -24,9 +23,9 @@ function OffersList({ offers, city }: OffersListProps): JSX.Element {
     setOffersData(updatedOffers);
   };
 
-  const handleMouseEnter = (id: string) => setActiveOffersId(id);
+  const handleMouseEnter = (id: string) => setActiveOfferCard(id);
 
-  const handleMouseLeave = () => setActiveOffersId(null);
+  const handleMouseLeave = () => setActiveOfferCard(null);
 
   useEffect(() => {
     setOffersData(offers);
@@ -40,7 +39,7 @@ function OffersList({ offers, city }: OffersListProps): JSX.Element {
           {offers.length > 1
             ? `${offers.length} places`
             : `${offers.length} place`}{' '}
-          to stay in {city}
+          to stay in {city.name}
         </b>
         <form className="places__sorting" action="#" method="get">
           <span className="places__sorting-caption">Sort by</span>
@@ -80,10 +79,11 @@ function OffersList({ offers, city }: OffersListProps): JSX.Element {
       </section>
       <div className="cities__right-section">
         <Map
-          key={city}
-          city={cityMap}
+          key={city.name}
+          className={'cities__map'}
+          city={city}
           points={offersData}
-          activePoint={activeOffersId}
+          activePoint={activeOfferCard}
         />
       </div>
     </div>

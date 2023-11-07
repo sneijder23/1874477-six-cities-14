@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect, MutableRefObject } from 'react';
 import { Map as LeafletMap, TileLayer } from 'leaflet';
-import { City } from '../types/city';
+import { City } from '../types-ts/city';
 import { OPEN_STREET_MAP, TITLE_LAYER_URL } from '../const';
 
-function useMap(mapRef: MutableRefObject<HTMLElement | null>, city: City): LeafletMap | null {
+export function useMap(mapRef: MutableRefObject<HTMLElement | null>, city: City): LeafletMap | null {
   const [map, setMap] = useState<LeafletMap | null>(null);
   const isRenderedRef = useRef<boolean>(false);
 
@@ -33,5 +33,3 @@ function useMap(mapRef: MutableRefObject<HTMLElement | null>, city: City): Leafl
 
   return map;
 }
-
-export default useMap;

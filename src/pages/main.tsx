@@ -1,35 +1,26 @@
-import { useEffect, useState } from 'react';
 import Header from '../components/header';
 import OffersList from '../components/offers-list';
-import { ServerOffer } from '../types/offer';
-import classnames from 'classnames';
-import { Link } from 'react-router-dom';
-import { CITY_MAP } from '../const';
-import { City } from '../types/city';
+import { ServerOffer } from '../types-ts/offer';
+import { City } from '../types-ts/city';
+import Tabs from '../components/tabs';
+import { useAppDispatch } from '../hooks/store';
+import { offersAction } from '../store/slice/offers';
+
 
 interface MainScreenProps {
   offers: ServerOffer[];
+  selectedCity: City;
+  setSelectedCity: React.Dispatch<React.SetStateAction<City>>;
 }
 
-function MainScreen({ offers }: MainScreenProps): JSX.Element {
-  const [selectedCity, setSelectedCity] = useState<City>(CITY_MAP['Amsterdam']);
-  const [filteredOffers, setFilteredOffers] = useState<ServerOffer[]>([]);
-
-  const createFilteredOffers = (city: City, allOffers: ServerOffer[]) => {
-    const newFilteredOffers = allOffers.filter(
-      (offer) => offer.city.name === city.name
-    );
-    setFilteredOffers(newFilteredOffers);
-  };
+function MainScreen({ offers, selectedCity, setSelectedCity }: MainScreenProps): JSX.Element {
+  const dispatch = useAppDispatch();
+  const offersByCity = offers.slice().filter((item) => item.city.name === selectedCity.name);
 
   const handleCityClick = (city: City) => {
     setSelectedCity(city);
-    createFilteredOffers(city, offers);
+    dispatch(offersAction.setCitySelect(city.name));
   };
-
-  useEffect(() => {
-    createFilteredOffers(selectedCity, offers);
-  }, [selectedCity, offers]);
 
   return (
     <div className="page page--gray page--main">
@@ -37,80 +28,9 @@ function MainScreen({ offers }: MainScreenProps): JSX.Element {
 
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
-        <div className="tabs">
-          <section className="locations container">
-            <ul className="locations__list tabs__list">
-              <li className="locations__item">
-                <Link
-                  className={classnames('locations__item-link', 'tabs__item', {
-                    'tabs__item--active': selectedCity === CITY_MAP['Paris'],
-                  })}
-                  onClick={() => handleCityClick(CITY_MAP['Paris'])}
-                  to="#"
-                >
-                  <span>Paris</span>
-                </Link>
-              </li>
-              <li className="locations__item">
-                <Link
-                  className={classnames('locations__item-link', 'tabs__item', {
-                    'tabs__item--active': selectedCity === CITY_MAP['Cologne'],
-                  })}
-                  onClick={() => handleCityClick(CITY_MAP['Cologne'])}
-                  to="#"
-                >
-                  <span>Cologne</span>
-                </Link>
-              </li>
-              <li className="locations__item">
-                <Link
-                  className={classnames('locations__item-link', 'tabs__item', {
-                    'tabs__item--active': selectedCity === CITY_MAP['Brussels']
-                  })}
-                  onClick={() => handleCityClick(CITY_MAP['Brussels'])}
-                  to="#"
-                >
-                  <span>Brussels</span>
-                </Link>
-              </li>
-              <li className="locations__item">
-                <Link
-                  className={classnames('locations__item-link', 'tabs__item', {
-                    'tabs__item--active': selectedCity === CITY_MAP['Amsterdam'],
-                  })}
-                  onClick={() => handleCityClick(CITY_MAP['Amsterdam'])}
-                  to="#"
-                >
-                  <span>Amsterdam</span>
-                </Link>
-              </li>
-              <li className="locations__item">
-                <Link
-                  className={classnames('locations__item-link', 'tabs__item', {
-                    'tabs__item--active': selectedCity === CITY_MAP['Hamburg'],
-                  })}
-                  onClick={() => handleCityClick(CITY_MAP['Hamburg'])}
-                  to="#"
-                >
-                  <span>Hamburg</span>
-                </Link>
-              </li>
-              <li className="locations__item">
-                <Link
-                  className={classnames('locations__item-link', 'tabs__item', {
-                    'tabs__item--active': selectedCity === CITY_MAP['Dusseldorf'],
-                  })}
-                  onClick={() => handleCityClick(CITY_MAP['Dusseldorf'])}
-                  to="#"
-                >
-                  <span>Dusseldorf</span>
-                </Link>
-              </li>
-            </ul>
-          </section>
-        </div>
+        <Tabs selectedCity={selectedCity} handleCityClick={handleCityClick}/>
         <div className="cities">
-          <OffersList offers={filteredOffers} city={selectedCity} />
+          <OffersList offers={offersByCity} city={selectedCity} />
         </div>
       </main>
     </div>

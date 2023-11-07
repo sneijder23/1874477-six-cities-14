@@ -8,12 +8,10 @@ function saveInitialTitle() {
   };
 }
 
-function useDocumentTitle(title: string) {
+export function useDocumentTitle(title: string) {
   useEffect(saveInitialTitle, []);
 
   useEffect(() => {
     document.title = `${title} | ${APP_NAME}`;
   }, [title]);
 }
-
-export { useDocumentTitle };

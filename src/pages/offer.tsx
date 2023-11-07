@@ -1,13 +1,13 @@
 import Header from '../components/header';
 import { useDocumentTitle } from '../hooks/document-title';
 import { useParams } from 'react-router-dom';
-import { ServerOffer } from '../types/offer';
+import { ServerOffer } from '../types-ts/offer';
 import { capitalizeFirstLetter } from '../utils/utils';
 import classNames from 'classnames';
 import ReviewForm from '../components/review-form';
 import ReviewList from '../components/review-list';
 import Map from '../components/map';
-import { Review } from '../types/review';
+import { Review } from '../types-ts/review';
 import Card from '../components/card';
 import { useState } from 'react';
 
@@ -158,7 +158,7 @@ function Offer({ offers, reviews }: OffersProps): JSX.Element {
             className={'offer__map'}
             city={foundOffer.city}
             points={offers}
-            activePoint={'2'}
+            activePoint={null}
           />
         </section>
         <div className="container">
@@ -168,7 +168,12 @@ function Offer({ offers, reviews }: OffersProps): JSX.Element {
             </h2>
             <div className="near-places__list places__list">
               {offersData.map((offer) => (
-                <Card key={offer.id} screenName="near-places" offer={offer} handleFavoriteChange={handleFavoriteChange}/>
+                <Card
+                  key={offer.id}
+                  screenName="near-places"
+                  offer={offer}
+                  handleFavoriteChange={handleFavoriteChange}
+                />
               ))}
             </div>
           </section>

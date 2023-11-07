@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { City } from '../types/city';
-import { ServerOffer } from '../types/offer';
+import { City } from '../types-ts/city';
+import { ServerOffer } from '../types-ts/offer';
 import Card from './card';
 import { useState } from 'react';
 
@@ -9,7 +9,11 @@ type FavoriteListProps = {
   offers: ServerOffer[];
 }[];
 
-function FavoriteList({ favoriteList }: { favoriteList: FavoriteListProps }): JSX.Element {
+function FavoriteList({
+  favoriteList,
+}: {
+  favoriteList: FavoriteListProps;
+}): JSX.Element {
   const [offersData, setOffersData] = useState(favoriteList);
 
   const handleFavoriteChange = (id: string, isFavorite: boolean) => {
@@ -43,7 +47,7 @@ function FavoriteList({ favoriteList }: { favoriteList: FavoriteListProps }): JS
             {offers.map((offer) => (
               <Card
                 key={offer.id}
-                screenName='favorites'
+                screenName="favorites"
                 offer={offer}
                 handleFavoriteChange={handleFavoriteChange}
               />

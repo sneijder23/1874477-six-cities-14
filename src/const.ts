@@ -1,12 +1,18 @@
-import { City } from './types/city';
+import { City } from './types-ts/city';
+
+export const DEFAULT_CITY = 'Paris';
 
 export const MAX_REVIEW_LENGHT: number = 10;
 
+export const MIN_TEXTAREA_LENGTH = 50;
+
+export const MAX_TEXTAREA_LENGTH = 300;
+
 export const APP_NAME: string = '6 cities';
 
-export const URL_MARKER_DEFAULT = 'img/pin-active.svg';
+export const URL_MARKER_DEFAULT = 'img/pin.svg';
 
-export const URL_MARKER_CURRENT = 'img/pin.svg';
+export const URL_MARKER_CURRENT = 'img/pin-active.svg';
 
 export const TITLE_LAYER_URL =
   'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
@@ -79,3 +85,10 @@ export const CITY_MAP: Record<string, City> = {
     },
   },
 } as const;
+
+export const SORT_TYPES = [
+  'Popular',
+  'Price: low to high',
+  'Price: high to low',
+  'Top rated first',
+];

@@ -1,5 +1,5 @@
-import { City } from '../types/city';
-import { ServerOffer } from '../types/offer';
+import { City } from '../types-ts/city';
+import { ServerOffer } from '../types-ts/offer';
 import Card from './card';
 import Map from './map';
 import { useEffect, useState } from 'react';
@@ -49,7 +49,7 @@ function OffersList({ offers, city }: OffersListProps): JSX.Element {
               <use xlinkHref="#icon-arrow-select"></use>
             </svg>
           </span>
-          <ul className="places__options places__options--custom places__options--closed">
+          <ul className="places__options places__options--custom">
             <li className="places__option places__option--active" tabIndex={0}>
               Popular
             </li>
@@ -68,7 +68,7 @@ function OffersList({ offers, city }: OffersListProps): JSX.Element {
           {offersData.map((offer) => (
             <Card
               key={offer.id}
-              screenName='cities'
+              screenName="cities"
               offer={offer}
               handleFavoriteChange={handleFavoriteChange}
               onMouseEnter={() => handleMouseEnter(offer.id)}

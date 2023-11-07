@@ -1,11 +1,14 @@
-import { Review } from '../types/review';
+import { Review } from '../types-ts/review';
 
 type ReviewProps = {
   review: Review;
 };
 function ReviewItem({ review }: ReviewProps): JSX.Element {
   const reviewDate = new Date(review.date);
-  const formattedDate = reviewDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+  const formattedDate = reviewDate.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+  });
 
   return (
     <li className="reviews__item">
@@ -41,4 +44,3 @@ function ReviewItem({ review }: ReviewProps): JSX.Element {
 }
 
 export default ReviewItem;
-

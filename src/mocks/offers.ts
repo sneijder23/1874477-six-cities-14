@@ -1,4 +1,4 @@
-import { ServerOffer } from '../types/offer';
+import { ServerOffer } from '../types-ts/offer';
 
 const Offers: ServerOffer[] = [{
   'city': {

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ServerOffer } from '../types/offer';
+import { ServerOffer } from '../types-ts/offer';
 import { capitalizeFirstLetter } from '../utils/utils';
 import { AppRoute } from '../const';
 import classNames from 'classnames';
@@ -11,9 +11,14 @@ type CardProps = {
   onMouseEnter?: (id: string) => void;
   onMouseLeave?: () => void;
   screenName?: string;
-} & Pick<HTMLAttributes<HTMLElement>, 'onMouseEnter' | 'onMouseLeave'>
+} & Pick<HTMLAttributes<HTMLElement>, 'onMouseEnter' | 'onMouseLeave'>;
 
-function Card({ offer, screenName, handleFavoriteChange, ...props }: CardProps): JSX.Element {
+function Card({
+  offer,
+  screenName,
+  handleFavoriteChange,
+  ...props
+}: CardProps): JSX.Element {
   const handleFavoriteClick = () => {
     const newIsFavorite = !offer.isFavorite;
     handleFavoriteChange(offer.id, newIsFavorite);
@@ -41,7 +46,12 @@ function Card({ offer, screenName, handleFavoriteChange, ...props }: CardProps):
           />
         </Link>
       </div>
-      <div className={classNames({'favorites__card-info': isFavoriteScreen}, 'place-card__info')}>
+      <div
+        className={classNames(
+          { 'favorites__card-info': isFavoriteScreen },
+          'place-card__info'
+        )}
+      >
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
             <b className="place-card__price-value">&euro;{offer.price}</b>
@@ -57,7 +67,9 @@ function Card({ offer, screenName, handleFavoriteChange, ...props }: CardProps):
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"></use>
             </svg>
-            <span className="visually-hidden">{isFavoriteScreen ? 'In' : 'To'} bookmarks</span>
+            <span className="visually-hidden">
+              {isFavoriteScreen ? 'In' : 'To'} bookmarks
+            </span>
           </button>
         </div>
         <div className="place-card__rating rating">
@@ -67,9 +79,7 @@ function Card({ offer, screenName, handleFavoriteChange, ...props }: CardProps):
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`${AppRoute.Offer}/${offer.id}`}>
-            {offer.title}
-          </Link>
+          <Link to={`${AppRoute.Offer}/${offer.id}`}>{offer.title}</Link>
         </h2>
         <p className="place-card__type">{capitalizeFirstLetter(offer.type)}</p>
       </div>

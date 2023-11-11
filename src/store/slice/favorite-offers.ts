@@ -11,15 +11,24 @@ const initialState: FavoriteState = {
 };
 
 export const favoriteOffersSlice = createSlice({
-  name: 'favorite-offers',
+  name: 'favoriteOffers',
   initialState,
   reducers: {
-    setFavoriteOffers(state, action: PayloadAction<ServerOffer[]>) {
-      state.items = action.payload;
+    setFavorite(state, action: PayloadAction<string>) {
+      const offerId = action.payload;
+      const foundOffer = state.items.find((offer) => offer.id === offerId);
+
+      if (foundOffer) {
+        foundOffer.isFavorite = !foundOffer.isFavorite;
+      }
     },
-    removeFavoriteOffers(state, action: PayloadAction<ServerOffer>) {
-      state.items = state.items.filter((item) => item.id !== action.payload.id
-      );
+    removeFavorite(state, action: PayloadAction<string>) {
+      const offerId = action.payload;
+      const foundIndex = state.items.findIndex((offer) => offer.id === offerId);
+
+      if (foundIndex !== -1) {
+        state.items[foundIndex].isFavorite = false;
+      }
     },
   }
 });

@@ -1,4 +1,4 @@
-import Header from '../components/header';
+import Header from '../components/header/header';
 import { useDocumentTitle } from '../hooks/document-title';
 
 function Login(): JSX.Element {

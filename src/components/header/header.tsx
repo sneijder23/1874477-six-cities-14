@@ -1,8 +1,12 @@
-import { AppRoute } from '../const';
-import Logo from './logo';
+import { AppRoute } from '../../const';
+import { useAppSelector } from '../../hooks/store';
+import Logo from '../logo/logo';
 import { Link } from 'react-router-dom';
 
 function Header(): JSX.Element {
+  const favoriteState = useAppSelector((state) => state.favoriteOffers.items);
+  const favoriteCount = favoriteState.filter((item) => item.isFavorite).length;
+
   return (
     <header className="header">
       <div className="container">
@@ -11,7 +15,8 @@ function Header(): JSX.Element {
           <nav className="header__nav">
             <ul className="header__nav-list">
               <li className="header__nav-item user">
-                <Link to={AppRoute.Favorites}
+                <Link
+                  to={AppRoute.Favorites}
                   className="header__nav-link header__nav-link--profile"
                 >
                   <div className="header__avatar-wrapper user__avatar-wrapper"></div>
@@ -20,7 +25,7 @@ function Header(): JSX.Element {
                   </span>
                 </Link>
                 <span className="header__favorite-count">
-                  <Link to={AppRoute.Favorites}>3</Link>
+                  <Link to={AppRoute.Favorites}>{favoriteCount}</Link>
                 </span>
               </li>
               <li className="header__nav-item">

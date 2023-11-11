@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { ServerOffer } from '../types-ts/offer';
-import { capitalizeFirstLetter } from '../utils/utils';
-import { AppRoute } from '../const';
+import { ServerOffer } from '../../types-ts/offer';
+import { capitalizeFirstLetter } from '../../utils/utils';
+import { AppRoute } from '../../const';
 import classNames from 'classnames';
 import { HTMLAttributes } from 'react';
 

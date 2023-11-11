@@ -1,25 +1,21 @@
-import Header from '../components/header';
+import Header from '../components/header/header';
 import { useDocumentTitle } from '../hooks/document-title';
 import { useParams } from 'react-router-dom';
-import { ServerOffer } from '../types-ts/offer';
 import { capitalizeFirstLetter } from '../utils/utils';
 import classNames from 'classnames';
-import ReviewForm from '../components/review-form';
-import ReviewList from '../components/review-list';
-import Map from '../components/map';
-import { Review } from '../types-ts/review';
-import Card from '../components/card';
+import ReviewForm from '../components/review/review-form';
+import ReviewList from '../components/review/review-list';
+import Map from '../components/map/map';
+import { useAppSelector } from '../hooks/store';
+import Card from '../components/card/card';
 import { useState } from 'react';
 
-interface OffersProps {
-  offers: ServerOffer[];
-  reviews: Review[];
-}
-
-function Offer({ offers, reviews }: OffersProps): JSX.Element {
+function Offer(): JSX.Element {
+  const reviewsState = useAppSelector((state) => state.reviews.items);
+  const offersState = useAppSelector((state) => state.offers.items);
   const { id } = useParams();
-  const foundOffer = offers.find((offer) => offer.id === id);
-  const otherOffers = offers
+  const foundOffer = offersState.find((offer) => offer.id === id);
+  const otherOffers = offersState
     .filter((offer) => offer.id !== foundOffer!.id)
     .slice(0, 3);
 
@@ -146,9 +142,9 @@ function Offer({ offers, reviews }: OffersProps): JSX.Element {
               <section className="offer__reviews reviews">
                 <h2 className="reviews__title">
                   Reviews &middot;{' '}
-                  <span className="reviews__amount">{reviews.length}</span>
+                  <span className="reviews__amount">{reviewsState.length}</span>
                 </h2>
-                <ReviewList reviews={reviews} />
+                <ReviewList reviews={reviewsState} />
                 <ReviewForm />
               </section>
             </div>
@@ -157,8 +153,8 @@ function Offer({ offers, reviews }: OffersProps): JSX.Element {
             key={foundOffer.id}
             className={'offer__map'}
             city={foundOffer.city}
-            points={offers}
-            activePoint={null}
+            points={offersState}
+            activePoint={id!}
           />
         </section>
         <div className="container">

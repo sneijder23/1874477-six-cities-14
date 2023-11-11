@@ -5,36 +5,34 @@ import Login from './pages/login';
 import Offer from './pages/offer';
 import Favorities from './pages/favorities';
 import Error from './pages/error';
-import PrivateRoute from './components/private-route';
-import { useState } from 'react';
+import PrivateRoute from './components/route/private-route';
 import { City } from './types-ts/city';
-import { useAppSelector } from './hooks/store';
-
 
 function App(): JSX.Element {
-  const stateCity = useAppSelector((state) => state.offers.city);
-  const [selectedCity, setSelectedCity] = useState<City>(CITY_MAP[stateCity]);
-  const offersState = useAppSelector((state) => state.offers.items);
-  const reviewsState = useAppSelector((state) => state.reviews.items);
-
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={AppRoute.Root} element={<Navigate to={`/${selectedCity.name}`} />}/>
-        <Route path={`${AppRoute.Root}${selectedCity.name}`} element={<MainScreen offers={offersState} selectedCity={selectedCity} setSelectedCity={setSelectedCity} />} />
+        <Route
+          path={AppRoute.Root}
+          element={<Navigate to={`/${Object.values(CITY_MAP)[0].name}`} />}
+        />
+        {Object.values(CITY_MAP).map((city: City) => (
+          <Route
+            key={city.name}
+            path={`/${city.name}`}
+            element={<MainScreen />}
+          />
+        ))}
         <Route path={AppRoute.Login} element={<Login />} />
         <Route
           path={AppRoute.Favorites}
           element={
             <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
-              <Favorities offers={offersState} />
+              <Favorities />
             </PrivateRoute>
           }
         />
-        <Route
-          path={`${AppRoute.Offer}/:id`}
-          element={<Offer offers={offersState} reviews={reviewsState} />}
-        />
+        <Route path={`${AppRoute.Offer}/:id`} element={<Offer />} />
         <Route path="*" element={<Error />} />
       </Routes>
     </BrowserRouter>

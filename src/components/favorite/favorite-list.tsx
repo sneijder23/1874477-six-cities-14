@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
-import { City } from '../types-ts/city';
-import { ServerOffer } from '../types-ts/offer';
-import Card from './card';
-import { useState } from 'react';
+import { City } from '../../types-ts/city';
+import { ServerOffer } from '../../types-ts/offer';
+import Card from '../card/card';
+import { useAppDispatch } from '../../hooks/store';
+import { offersAction } from '../../store/slice/offers';
+import { favoriteOffersAction } from '../../store/slice/favorite-offers';
 
 type FavoriteListProps = {
   city: City;
@@ -14,27 +16,16 @@ function FavoriteList({
 }: {
   favoriteList: FavoriteListProps;
 }): JSX.Element {
-  const [offersData, setOffersData] = useState(favoriteList);
+  const dispatch = useAppDispatch();
 
-  const handleFavoriteChange = (id: string, isFavorite: boolean) => {
-    const updatedOffersData = offersData.map(({ city, offers }) => {
-      const updatedOffers = offers.map((offer) => {
-        if (offer.id === id) {
-          return { ...offer, isFavorite };
-        } else {
-          return offer;
-        }
-      });
-
-      return { city, offers: updatedOffers };
-    });
-
-    setOffersData(updatedOffersData);
+  const handleFavoriteChange = (id: string) => {
+    dispatch(offersAction.setFavorite(id));
+    dispatch(favoriteOffersAction.removeFavorite(id));
   };
 
   return (
     <ul className="favorites__list">
-      {offersData.map(({ city, offers }) => (
+      {favoriteList.map(({ city, offers }) => (
         <li key={city.name} className="favorites__locations-items">
           <div className="favorites__locations locations locations--current">
             <div className="locations__item">

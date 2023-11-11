@@ -86,9 +86,9 @@ export const CITY_MAP: Record<string, City> = {
   },
 } as const;
 
-export const SORT_TYPES = [
-  'Popular',
-  'Price: low to high',
-  'Price: high to low',
-  'Top rated first',
-];
+export const SortTypes = {
+  Popular: 'Popular',
+  PriceLowToHigh: 'Price: low to high',
+  PriceHighToLow: 'Price: high to low',
+  TopRatedFirst: 'Top rated first'
+} as const;

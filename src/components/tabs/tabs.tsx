@@ -1,5 +1,5 @@
-import { AppRoute, CITY_MAP } from '../const';
-import { City } from '../types-ts/city';
+import { AppRoute, CITY_MAP } from '../../const';
+import { City } from '../../types-ts/city';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 

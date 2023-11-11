@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { MIN_TEXTAREA_LENGTH, MAX_TEXTAREA_LENGTH } from '../const';
+import { MIN_TEXTAREA_LENGTH, MAX_TEXTAREA_LENGTH } from '../../const';
 
 function ReviewForm(): JSX.Element {
   const initialFormData = {
@@ -25,10 +25,18 @@ function ReviewForm(): JSX.Element {
   };
 
   const isValidate =
-    formData.review.length < MIN_TEXTAREA_LENGTH || formData.review.length > MAX_TEXTAREA_LENGTH || formData.rating === '';
+    formData.review.length < MIN_TEXTAREA_LENGTH ||
+    formData.review.length > MAX_TEXTAREA_LENGTH ||
+    formData.rating === '';
 
   return (
-    <form onSubmit={hadleFormSubmit} ref={formRef} className="reviews__form form" action="#" method="post">
+    <form
+      onSubmit={hadleFormSubmit}
+      ref={formRef}
+      className="reviews__form form"
+      action="#"
+      method="post"
+    >
       <label className="reviews__label form__label" htmlFor="review">
         Your review
       </label>

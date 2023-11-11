@@ -1,5 +1,5 @@
-import { MAX_REVIEW_LENGHT } from '../const';
-import { Review } from '../types-ts/review';
+import { MAX_REVIEW_LENGHT } from '../../const';
+import { Review } from '../../types-ts/review';
 import ReviewItem from './review-item';
 
 type ReviewListProps = {

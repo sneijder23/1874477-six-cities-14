@@ -1,24 +1,16 @@
-import Header from '../components/header';
-import OffersList from '../components/offers-list';
-import { ServerOffer } from '../types-ts/offer';
+import Header from '../components/header/header';
+import OffersList from '../components/offers/offers-list';
 import { City } from '../types-ts/city';
-import Tabs from '../components/tabs';
-import { useAppDispatch } from '../hooks/store';
+import Tabs from '../components/tabs/tabs';
+import { useAppDispatch, useAppSelector } from '../hooks/store';
 import { offersAction } from '../store/slice/offers';
+import { CITY_MAP } from '../const';
 
-
-interface MainScreenProps {
-  offers: ServerOffer[];
-  selectedCity: City;
-  setSelectedCity: React.Dispatch<React.SetStateAction<City>>;
-}
-
-function MainScreen({ offers, selectedCity, setSelectedCity }: MainScreenProps): JSX.Element {
+function MainScreen(): JSX.Element {
   const dispatch = useAppDispatch();
-  const offersByCity = offers.slice().filter((item) => item.city.name === selectedCity.name);
+  const stateCity = useAppSelector((state) => state.offers.city);
 
   const handleCityClick = (city: City) => {
-    setSelectedCity(city);
     dispatch(offersAction.setCitySelect(city.name));
   };
 
@@ -28,9 +20,12 @@ function MainScreen({ offers, selectedCity, setSelectedCity }: MainScreenProps):
 
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
-        <Tabs selectedCity={selectedCity} handleCityClick={handleCityClick}/>
+        <Tabs
+          selectedCity={CITY_MAP[stateCity]}
+          handleCityClick={handleCityClick}
+        />
         <div className="cities">
-          <OffersList offers={offersByCity} city={selectedCity} />
+          <OffersList city={stateCity} />
         </div>
       </main>
     </div>

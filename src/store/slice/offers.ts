@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { DEFAULT_CITY } from '../../const';
 import { ServerOffer } from '../../types-ts/offer';
-// import { fetchAllOffers } from '../thunk/offers';
+import { fetchAllOffers } from '../thunk/offers';
 
 
 interface OffersState {
@@ -20,34 +20,28 @@ const initialState: OffersState = {
   error: null,
 };
 
-// function proccesSuccess(state: OffersState, action: PayloadAction<ServerOffer[]>) {
-//   state.items = action.payload;
-//   state.isOffersLoading = false;
-// }
+function proccesSuccess(state: OffersState, action: PayloadAction<ServerOffer[]>) {
+  state.items = action.payload;
+  state.isOffersLoading = false;
+}
 
-// function proccesFailed(state: OffersState) {
-//   state.isOffersLoading = false;
-// }
+function proccesFailed(state: OffersState) {
+  state.isOffersLoading = false;
+}
 
-// function proccesPending(state: OffersState) {
-//   state.isOffersLoading = true;
-// }
+function proccesPending(state: OffersState) {
+  state.isOffersLoading = true;
+}
 
 export const offersSlice = createSlice({
-  // extraReducers: (builder) => {
-  //   builder.addCase(fetchAllOffers.fulfilled, proccesSuccess);
-  //   builder.addCase(fetchAllOffers.rejected, proccesFailed);
-  //   builder.addCase(fetchAllOffers.pending, proccesPending);
-  // },
+  extraReducers: (builder) => {
+    builder.addCase(fetchAllOffers.fulfilled, proccesSuccess);
+    builder.addCase(fetchAllOffers.rejected, proccesFailed);
+    builder.addCase(fetchAllOffers.pending, proccesPending);
+  },
   name: 'offers',
   initialState,
   reducers: {
-    setOffers: (state, action: PayloadAction<ServerOffer[]>) => {
-      state.items = action.payload;
-    },
-    setOffersLoadingStatus: (state, action: PayloadAction<boolean>) => {
-      state.isOffersLoading = action.payload;
-    },
     setCitySelect(state, action: PayloadAction<string>) {
       state.city = action.payload;
     },
@@ -68,5 +62,5 @@ export const offersSlice = createSlice({
   }
 });
 
-// export const offersExtAction = { fetchAllOffers };
+export const offersExtAction = { fetchAllOffers };
 export const offersAction = offersSlice.actions;

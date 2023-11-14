@@ -5,9 +5,9 @@ import { Provider } from 'react-redux';
 import { store } from './store';
 import { ErrorMessage } from './components/error-message/error-message';
 import { userAction } from './store/slice/user';
-import { fetchAllOffers } from './store/thunk/offers';
+import { offersExtAction } from './store/slice/offers';
 
-store.dispatch(fetchAllOffers());
+store.dispatch(offersExtAction.fetchAllOffers());
 store.dispatch(userAction.checkAuth());
 
 const root = ReactDOM.createRoot(

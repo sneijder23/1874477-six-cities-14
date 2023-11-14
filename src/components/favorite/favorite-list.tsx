@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { City } from '../../types-ts/city';
 import { ServerOffer } from '../../types-ts/offer';
-import Card from '../card/card';
+import { Card } from '../card/card';
 import { useAppDispatch } from '../../hooks/store';
 import { offersAction } from '../../store/slice/offers';
-import { favoriteOffersAction } from '../../store/slice/favorite-offers';
+import { favoriteOffersAction } from '../../store/slice/favorite';
 
 type FavoriteListProps = {
   city: City;
@@ -50,4 +50,4 @@ function FavoriteList({
   );
 }
 
-export default FavoriteList;
+export { FavoriteList };

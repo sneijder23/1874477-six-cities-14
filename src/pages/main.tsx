@@ -1,12 +1,12 @@
-import Header from '../components/header/header';
-import OffersList from '../components/offers/offers-list';
+import { Header } from '../components/header/header';
+import { OffersList } from '../components/offers/offers-list';
 import { City } from '../types-ts/city';
-import Tabs from '../components/tabs/tabs';
+import { Tabs } from '../components/tabs/tabs';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
 import { offersAction } from '../store/slice/offers';
 import { CITY_MAP } from '../const';
 
-function MainScreen(): JSX.Element {
+function Main(): JSX.Element {
   const dispatch = useAppDispatch();
   const stateCity = useAppSelector((state) => state.offers.city);
 
@@ -32,4 +32,4 @@ function MainScreen(): JSX.Element {
   );
 }
 
-export default MainScreen;
+export { Main };

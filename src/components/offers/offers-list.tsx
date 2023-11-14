@@ -1,13 +1,12 @@
 import { CITY_MAP, SortTypes } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
-import { favoriteOffersAction } from '../../store/slice/favorite-offers';
+import { favoriteOffersAction } from '../../store/slice/favorite';
 import { offersAction } from '../../store/slice/offers';
-import Card from '../card/card';
-import Map from '../map/map';
+import { Card } from '../card/card';
+import { Map } from '../map/map';
 import { useEffect, useState } from 'react';
-import Sort, { CreateSortingOffers } from '../sort/sort';
-import OffersListEmpty from './offers-list-empty';
-// import { ServerOffer } from '../types-ts/offer';
+import { Sort, CreateSortingOffers } from '../sort/sort';
+import { OffersListEmpty } from './offers-list-empty';
 
 type OffersListProps = {
   city: string;
@@ -78,4 +77,4 @@ function OffersList({ city }: OffersListProps): JSX.Element {
   );
 }
 
-export default OffersList;
+export { OffersList };

@@ -1,8 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './app';
+import { App } from './components/app/app';
 import { Provider } from 'react-redux';
 import { store } from './store';
+import { ErrorMessage } from './components/error-message/error-message';
+import { userAction } from './store/slice/user';
+import { fetchAllOffers } from './store/thunk/offers';
+
+store.dispatch(fetchAllOffers());
+store.dispatch(userAction.checkAuth());
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -11,6 +17,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
+      <ErrorMessage />
       <App />
     </Provider>
   </React.StrictMode>

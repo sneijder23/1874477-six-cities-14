@@ -159,4 +159,4 @@ function ReviewForm(): JSX.Element {
   );
 }
 
-export default ReviewForm;
+export { ReviewForm };

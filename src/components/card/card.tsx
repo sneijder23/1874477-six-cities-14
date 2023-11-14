@@ -8,17 +8,10 @@ import { HTMLAttributes } from 'react';
 type CardProps = {
   offer: ServerOffer;
   handleFavoriteChange: (id: string, isFavorite: boolean) => void;
-  onMouseEnter?: (id: string) => void;
-  onMouseLeave?: () => void;
   screenName?: string;
 } & Pick<HTMLAttributes<HTMLElement>, 'onMouseEnter' | 'onMouseLeave'>;
 
-function Card({
-  offer,
-  screenName,
-  handleFavoriteChange,
-  ...props
-}: CardProps): JSX.Element {
+function Card({ offer, screenName, handleFavoriteChange, ...props}: CardProps): JSX.Element {
   const handleFavoriteClick = () => {
     const newIsFavorite = !offer.isFavorite;
     handleFavoriteChange(offer.id, newIsFavorite);
@@ -87,4 +80,4 @@ function Card({
   );
 }
 
-export default Card;
+export { Card };

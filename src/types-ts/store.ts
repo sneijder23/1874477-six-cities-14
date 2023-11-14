@@ -1,6 +1,12 @@
+import { AxiosInstance } from 'axios';
 import { store } from '../store/index';
 
-type State = ReturnType<typeof store.getState>;
-type AppDispatch = typeof store.dispatch;
+export type State = ReturnType<typeof store.getState>;
 
-export type { State, AppDispatch };
+export type AppDispatch = typeof store.dispatch;
+
+export type ThunkObjType = {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+};

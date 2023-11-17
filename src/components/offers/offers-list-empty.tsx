@@ -11,5 +11,5 @@ function OffersListEmpty(): JSX.Element {
   );
 }
 
-export default OffersListEmpty;
+export { OffersListEmpty };
 

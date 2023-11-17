@@ -32,4 +32,4 @@ function Tabs({ selectedCity, handleCityClick }: TabsProps): JSX.Element {
   );
 }
 
-export default Tabs;
+export { Tabs };

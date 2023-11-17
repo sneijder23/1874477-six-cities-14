@@ -1,4 +1,4 @@
-type ServerUser = {
+export type ServerUser = {
   avatarUrl: string;
   email: string;
   id: string;
@@ -7,10 +7,9 @@ type ServerUser = {
   token: string;
 }
 
-type User = Omit<ServerUser, 'email' | 'token'>;
+export type User = Omit<ServerUser, 'email' | 'token'>;
 
-type AuthServerUser = Pick<ServerUser, 'email'> & {
+export type LoginData = {
+  email: string;
   password: string;
 }
-
-export type { ServerUser, User, AuthServerUser };

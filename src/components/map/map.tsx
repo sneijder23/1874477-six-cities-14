@@ -52,4 +52,4 @@ function Map({ className, city, points, activePoint }: MapProps): JSX.Element {
   return <section className={`${className} map`} ref={mapRef}></section>;
 }
 
-export default Map;
+export { Map };

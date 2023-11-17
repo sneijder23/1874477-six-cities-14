@@ -1,6 +1,6 @@
-import FavoriteList from '../components/favorite/favorite-list';
-import FavoriteEmpty from '../components/favorite/favorite-empty';
-import Header from '../components/header/header';
+import { FavoriteList } from '../components/favorite/favorite-list';
+import { FavoriteEmpty } from '../components/favorite/favorite-empty';
+import { Header } from '../components/header/header';
 import { useDocumentTitle } from '../hooks/document-title';
 import { useAppSelector } from '../hooks/store';
 import { City } from '../types-ts/city';
@@ -63,4 +63,4 @@ function Favorities(): JSX.Element {
   );
 }
 
-export default Favorities;
+export { Favorities };

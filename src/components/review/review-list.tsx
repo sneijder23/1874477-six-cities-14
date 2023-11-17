@@ -1,6 +1,6 @@
 import { MAX_REVIEW_LENGHT } from '../../const';
 import { Review } from '../../types-ts/review';
-import ReviewItem from './review-item';
+import { ReviewItem } from './review-item';
 
 type ReviewListProps = {
   reviews: Review[];
@@ -19,4 +19,4 @@ function ReviewList({ reviews }: ReviewListProps): JSX.Element {
   );
 }
 
-export default ReviewList;
+export { ReviewList };

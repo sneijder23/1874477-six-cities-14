@@ -2,7 +2,7 @@ import { City } from './city';
 import { Location } from './location';
 import { User } from './user';
 
-type ServerOffer = {
+export type ServerOffer = {
   bedrooms: number;
   city: City;
   description: string;
@@ -21,4 +21,3 @@ type ServerOffer = {
   type: string;
 }
 
-export type { ServerOffer };

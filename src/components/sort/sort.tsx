@@ -8,6 +8,8 @@ type SortProps = {
   setActiveSort: React.Dispatch<React.SetStateAction<string>>;
 };
 
+type SortTypeKey = keyof typeof SortTypes;
+
 export function CreateSortingOffers(activeSort: string, offers: ServerOffer[]) {
   switch (activeSort) {
     case SortTypes.PriceLowToHigh:
@@ -51,15 +53,15 @@ function Sort({ activeSort, setActiveSort }: SortProps): JSX.Element {
             key={key}
             className={classNames('places__option', {
               'places__option--active':
-                SortTypes[key as keyof typeof SortTypes] === activeSort,
+                SortTypes[key as SortTypeKey] === activeSort,
             })}
             onClick={() => {
-              setActiveSort(SortTypes[key as keyof typeof SortTypes]);
+              setActiveSort(SortTypes[key as SortTypeKey]);
               toggleOptions();
             }}
             tabIndex={0}
           >
-            {SortTypes[key as keyof typeof SortTypes]}
+            {SortTypes[key as SortTypeKey]}
           </li>
         ))}
       </ul>
@@ -67,4 +69,4 @@ function Sort({ activeSort, setActiveSort }: SortProps): JSX.Element {
   );
 }
 
-export default Sort;
+export { Sort };

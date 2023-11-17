@@ -2,6 +2,8 @@ import { City } from './types-ts/city';
 
 export const DEFAULT_CITY = 'Paris';
 
+export const TIMEOUT_SHOW_ERROR = 2000;
+
 export const MAX_REVIEW_LENGHT: number = 10;
 
 export const MIN_TEXTAREA_LENGTH = 50;
@@ -27,6 +29,14 @@ export const enum AppRoute {
   Offer = '/offer',
   Favorites = '/favorites',
   Error = '/error'
+}
+
+export const enum APIRoute {
+  Offers = '/offers',
+  Favorites = '/favorites',
+  Reviews = '/comments',
+  Login = '/login',
+  Logout = '/logout',
 }
 
 export const enum AuthorizationStatus {

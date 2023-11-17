@@ -16,4 +16,4 @@ function FavoriteEmpty(): JSX.Element {
   );
 }
 
-export default FavoriteEmpty;
+export { FavoriteEmpty };

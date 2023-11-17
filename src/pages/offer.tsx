@@ -1,13 +1,13 @@
-import Header from '../components/header/header';
+import { Header } from '../components/header/header';
 import { useDocumentTitle } from '../hooks/document-title';
 import { useParams } from 'react-router-dom';
 import { capitalizeFirstLetter } from '../utils/utils';
 import classNames from 'classnames';
-import ReviewForm from '../components/review/review-form';
-import ReviewList from '../components/review/review-list';
-import Map from '../components/map/map';
+import { ReviewForm } from '../components/review/review-form';
+import { ReviewList } from '../components/review/review-list';
+import { Map } from '../components/map/map';
 import { useAppSelector } from '../hooks/store';
-import Card from '../components/card/card';
+import { Card } from '../components/card/card';
 import { useState } from 'react';
 
 function Offer(): JSX.Element {
@@ -179,4 +179,4 @@ function Offer(): JSX.Element {
   );
 }
 
-export default Offer;
+export { Offer };

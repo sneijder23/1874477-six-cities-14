@@ -1,8 +1,6 @@
 import { Location } from './location';
 
-type City = {
+export type City = {
   location: Location;
   name: string;
 }
-
-export type { City };

@@ -33,7 +33,7 @@ export const enum AppRoute {
 
 export const enum APIRoute {
   Offers = '/offers',
-  Favorites = '/favorites',
+  Favorites = '/favorite',
   Reviews = '/comments',
   Login = '/login',
   Logout = '/logout',

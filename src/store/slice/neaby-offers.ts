@@ -1,23 +1,43 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Offers } from '../../mocks/offers';
 import { ServerOffer } from '../../types-ts/offer';
+import { fetchNearByOffers } from '../thunk/offers';
 
 interface NearbyOffersState {
-  items: ServerOffer[];
+  offers: ServerOffer[] | null;
+  isOffersLoading: boolean;
 }
 
 const initialState: NearbyOffersState = {
-  items: Offers,
+  offers: null,
+  isOffersLoading: false,
+};
+
+const processSuccess = (state: NearbyOffersState, action: PayloadAction<ServerOffer[]>) => {
+  state.offers = action.payload;
+  state.isOffersLoading = false;
+};
+
+
+const processFailed = (state: NearbyOffersState) => {
+  state.isOffersLoading = false;
+};
+
+const processPending = (state: NearbyOffersState) => {
+  state.isOffersLoading = true;
 };
 
 export const nearbyOffersSlice = createSlice({
-  name: 'nearby-offers',
+  extraReducers: (builder) => {
+    builder.addCase(fetchNearByOffers.pending, processPending);
+    builder.addCase(fetchNearByOffers.fulfilled, processSuccess);
+    builder.addCase(fetchNearByOffers.rejected, processFailed);
+
+  },
+  name: 'nearbyOffers',
   initialState,
   reducers: {
-    addNearbyOffers: (state, action: PayloadAction<ServerOffer[]>) => {
-      state.items = action.payload;
-    },
   }
 });
 
-export const nearbyOffersAction = nearbyOffersSlice.actions;
+export const nearbyOffersAction = { fetchNearByOffers };
+export const nearbyOffersActionSlice = nearbyOffersSlice.actions;

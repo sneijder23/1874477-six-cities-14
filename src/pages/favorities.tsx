@@ -8,7 +8,7 @@ import { ServerOffer } from '../types-ts/offer';
 
 function Favorities(): JSX.Element {
   useDocumentTitle('Favorites');
-  const favoriteState = useAppSelector((state) => state.favoriteOffers.items);
+  const favoriteState = useAppSelector((state) => state.favoriteOffers.offers);
 
   const favoritesList: { city: City; offers: ServerOffer[] }[] =
     favoriteState.reduce<{ city: City; offers: ServerOffer[] }[]>(

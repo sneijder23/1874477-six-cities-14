@@ -6,35 +6,37 @@ import classNames from 'classnames';
 import { ReviewForm } from '../components/review/review-form';
 import { ReviewList } from '../components/review/review-list';
 import { Map } from '../components/map/map';
-import { useAppSelector } from '../hooks/store';
+import { useAppDispatch, useAppSelector } from '../hooks/store';
 import { Card } from '../components/card/card';
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { offersExtraAction } from '../store/slice/offers';
+import { nearbyOffersAction } from '../store/slice/neaby-offers';
+import { Spinner } from './loading-screen';
+import { AuthorizationStatus } from '../const';
 
 function Offer(): JSX.Element {
-  const reviewsState = useAppSelector((state) => state.reviews.items);
-  const offersState = useAppSelector((state) => state.offers.items);
+  const dispatch = useAppDispatch();
   const { id } = useParams();
-  const foundOffer = offersState.find((offer) => offer.id === id);
-  const otherOffers = offersState
-    .filter((offer) => offer.id !== foundOffer!.id)
-    .slice(0, 3);
 
-  const [offersData, setOffersData] = useState(otherOffers);
+  useEffect(() => {
+    if (id) {
+      dispatch(offersExtraAction.fetchOneOffer(id));
+      dispatch(nearbyOffersAction.fetchNearByOffers(id));
+    }
+  }, [dispatch, id]);
 
-  const handleFavoriteChange = (idOff: string, isFavorite: boolean) => {
-    const updatedOffers = offersData.map((offer) => {
-      if (offer.id === idOff) {
-        return { ...offer, isFavorite };
-      }
-      return offer;
-    });
-    setOffersData(updatedOffers);
-  };
+  const reviewsState = useAppSelector((state) => state.reviews.items);
+  const offersState = useAppSelector((state) => state.offers.offer);
+  const nerbyOffersState = useAppSelector((state) => state.nearbyOffers.offers);
+  const isOffersLoading = useAppSelector((state) => state.offers.isOffersLoading);
+  const isAuth = useAppSelector((state) => state.user.authStatus === AuthorizationStatus.Auth);
+
+  const handleFavoriteChange = () => {};
 
   useDocumentTitle('Offer');
 
-  if (!foundOffer) {
-    return <div>Offer not found</div>;
+  if (!offersState || !nerbyOffersState || isOffersLoading) {
+    return (<Spinner />);
   }
 
   return (
@@ -46,12 +48,12 @@ function Offer(): JSX.Element {
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
               <div className="offer__image-wrapper">
-                {foundOffer.images.map((image) => (
+                {offersState.images.map((image) => (
                   <img
                     key={image}
                     className="offer__image"
                     src={image}
-                    alt={foundOffer.title}
+                    alt={offersState.title}
                   />
                 ))}
               </div>
@@ -59,17 +61,17 @@ function Offer(): JSX.Element {
           </div>
           <div className="offer__container container">
             <div className="offer__wrapper">
-              {foundOffer.isPremium && (
+              {offersState.isPremium && (
                 <div className="offer__mark">
                   <span>Premium</span>
                 </div>
               )}
               <div className="offer__name-wrapper">
-                <h1 className="offer__name">{foundOffer.title}</h1>
+                <h1 className="offer__name">{offersState.title}</h1>
                 <button
                   className={classNames('offer__bookmark-button', 'button', {
                     'place-card__bookmark-button--active':
-                      foundOffer.isFavorite,
+                      offersState.isFavorite,
                   })}
                   type="button"
                 >
@@ -82,34 +84,36 @@ function Offer(): JSX.Element {
               <div className="offer__rating rating">
                 <div className="offer__stars rating__stars">
                   <span
-                    style={{ width: `${Math.round(foundOffer.rating) * 20}%` }}
+                    style={{
+                      width: `${Math.round(offersState.rating) * 20}%`,
+                    }}
                   >
                   </span>
                   <span className="visually-hidden">Rating</span>
                 </div>
                 <span className="offer__rating-value rating__value">
-                  {foundOffer.rating}
+                  {offersState.rating}
                 </span>
               </div>
               <ul className="offer__features">
                 <li className="offer__feature offer__feature--entire">
-                  {capitalizeFirstLetter(foundOffer.type)}
+                  {capitalizeFirstLetter(offersState.type)}
                 </li>
                 <li className="offer__feature offer__feature--bedrooms">
-                  {foundOffer.bedrooms} Bedrooms
+                  {offersState.bedrooms} Bedrooms
                 </li>
                 <li className="offer__feature offer__feature--adults">
-                  Max {foundOffer.maxAdults} adults
+                  Max {offersState.maxAdults} adults
                 </li>
               </ul>
               <div className="offer__price">
-                <b className="offer__price-value">&euro;{foundOffer.price}</b>
+                <b className="offer__price-value">&euro;{offersState.price}</b>
                 <span className="offer__price-text">&nbsp;night</span>
               </div>
               <div className="offer__inside">
                 <h2 className="offer__inside-title">What&apos;s inside</h2>
                 <ul className="offer__inside-list">
-                  {foundOffer.goods.map((good) => (
+                  {offersState.goods.map((good) => (
                     <li key={good} className="offer__inside-item">
                       {good}
                     </li>
@@ -122,21 +126,21 @@ function Offer(): JSX.Element {
                   <div className="offer__avatar-wrapper offer__avatar-wrapper--pro user__avatar-wrapper">
                     <img
                       className="offer__avatar user__avatar"
-                      src={foundOffer.host.avatarUrl}
+                      src={offersState.host.avatarUrl}
                       width="74"
                       height="74"
                       alt="Host avatar"
                     />
                   </div>
                   <span className="offer__user-name">
-                    {foundOffer.host.name}
+                    {offersState.host.name}
                   </span>
                   <span className="offer__user-status">
-                    {foundOffer.host.isPro}
+                    {offersState.host.isPro}
                   </span>
                 </div>
                 <div className="offer__description">
-                  <p className="offer__text">{foundOffer.description}</p>
+                  <p className="offer__text">{offersState.description}</p>
                 </div>
               </div>
               <section className="offer__reviews reviews">
@@ -145,15 +149,16 @@ function Offer(): JSX.Element {
                   <span className="reviews__amount">{reviewsState.length}</span>
                 </h2>
                 <ReviewList reviews={reviewsState} />
-                <ReviewForm />
+                {isAuth &&
+                <ReviewForm />}
               </section>
             </div>
           </div>
           <Map
-            key={foundOffer.id}
+            key={offersState.id}
             className={'offer__map'}
-            city={foundOffer.city}
-            points={offersState}
+            city={offersState.city}
+            points={nerbyOffersState}
             activePoint={id!}
           />
         </section>
@@ -163,14 +168,15 @@ function Offer(): JSX.Element {
               Other places in the neighbourhood
             </h2>
             <div className="near-places__list places__list">
-              {offersData.map((offer) => (
-                <Card
-                  key={offer.id}
-                  screenName="near-places"
-                  offer={offer}
-                  handleFavoriteChange={handleFavoriteChange}
-                />
-              ))}
+              {Array.isArray(nerbyOffersState) &&
+                nerbyOffersState.map((offer) => (
+                  <Card
+                    key={offer.id}
+                    screenName="near-places"
+                    offer={offer}
+                    handleFavoriteChange={handleFavoriteChange}
+                  />
+                ))}
             </div>
           </section>
         </div>

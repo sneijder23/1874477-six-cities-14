@@ -1,17 +1,23 @@
 import { Link } from 'react-router-dom';
-import { MouseEvent } from 'react';
+import { MouseEvent, useEffect } from 'react';
 import { AppRoute } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
 import { logout } from '../../store/thunk/auth';
+import { favoriteOffersExtraAction } from '../../store/slice/favorite';
 
 function UserLogged() {
   const dispatch = useAppDispatch();
   const userData = useAppSelector((state) => state.user.info);
+  const userFavorites = useAppSelector((state) => state.favoriteOffers.offers);
 
   const handleButtonClick = (evt: MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
     dispatch(logout());
   };
+
+  useEffect(() => {
+    dispatch(favoriteOffersExtraAction.fetchFavoriteOffers());
+  }, [dispatch]);
 
   return (
     userData && (
@@ -29,11 +35,11 @@ function UserLogged() {
               />
             </div>
             <span className="header__user-name user__name">
-              {userData.name}
+              {userData.email}
             </span>
           </Link>
           <span className="header__favorite-count">
-            <Link to={AppRoute.Favorites}>5</Link>
+            <Link to={AppRoute.Favorites}>{userFavorites.length}</Link>
           </span>
         </li>
         <li className="header__nav-item">

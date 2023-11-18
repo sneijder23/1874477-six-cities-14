@@ -1,11 +1,12 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { DEFAULT_CITY } from '../../const';
 import { ServerOffer } from '../../types-ts/offer';
-import { fetchAllOffers } from '../thunk/offers';
+import { clearError, fetchAllOffers, fetchOneOffer } from '../thunk/offers';
 
 
 interface OffersState {
-  items: ServerOffer[];
+  offers: ServerOffer[];
+  offer: ServerOffer | null;
   city: string;
   activePoint?: string;
   isOffersLoading: boolean;
@@ -13,31 +14,42 @@ interface OffersState {
 }
 
 const initialState: OffersState = {
-  items: [],
+  offers: [],
+  offer: null,
   city: DEFAULT_CITY,
   activePoint: undefined,
-  isOffersLoading: true,
+  isOffersLoading: false,
   error: null,
 };
 
-function proccesSuccess(state: OffersState, action: PayloadAction<ServerOffer[]>) {
-  state.items = action.payload;
+const processOneOfferSuccess = (state: OffersState, action: PayloadAction<ServerOffer>) => {
+  state.offer = action.payload;
   state.isOffersLoading = false;
-}
+};
 
-function proccesFailed(state: OffersState) {
+const processSuccess = (state: OffersState, action: PayloadAction<ServerOffer[]>) => {
+  state.offers = action.payload;
   state.isOffersLoading = false;
-}
+};
 
-function proccesPending(state: OffersState) {
+
+const processFailed = (state: OffersState) => {
+  state.isOffersLoading = false;
+  clearError();
+};
+
+const proccesPending = (state: OffersState) => {
   state.isOffersLoading = true;
-}
+};
 
 export const offersSlice = createSlice({
   extraReducers: (builder) => {
-    builder.addCase(fetchAllOffers.fulfilled, proccesSuccess);
-    builder.addCase(fetchAllOffers.rejected, proccesFailed);
     builder.addCase(fetchAllOffers.pending, proccesPending);
+    builder.addCase(fetchAllOffers.fulfilled, processSuccess);
+    builder.addCase(fetchAllOffers.rejected, processFailed);
+    builder.addCase(fetchOneOffer.pending, proccesPending);
+    builder.addCase(fetchOneOffer.fulfilled, processOneOfferSuccess);
+    builder.addCase(fetchOneOffer.rejected, processFailed);
   },
   name: 'offers',
   initialState,
@@ -47,7 +59,7 @@ export const offersSlice = createSlice({
     },
     setFavorite(state, action: PayloadAction<string>) {
       const offerId = action.payload;
-      const foundOffer = state.items.find((offer) => offer.id === offerId);
+      const foundOffer = state.offers.find((offer) => offer.id === offerId);
 
       if (foundOffer) {
         foundOffer.isFavorite = !foundOffer.isFavorite;
@@ -62,5 +74,5 @@ export const offersSlice = createSlice({
   }
 });
 
-export const offersExtAction = { fetchAllOffers };
+export const offersExtraAction = { fetchAllOffers, fetchOneOffer };
 export const offersAction = offersSlice.actions;

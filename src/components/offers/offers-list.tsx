@@ -1,6 +1,6 @@
 import { CITY_MAP, SortTypes } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
-import { favoriteOffersAction } from '../../store/slice/favorite';
+import { favoriteOffersExtraAction } from '../../store/slice/favorite';
 import { offersAction } from '../../store/slice/offers';
 import { Card } from '../card/card';
 import { Map } from '../map/map';
@@ -16,7 +16,7 @@ function OffersList({ city }: OffersListProps): JSX.Element {
   const dispatch = useAppDispatch();
   const [activeOfferCard, setActiveOfferCard] = useState<string | null>(null);
   const [activeSort, setActiveSort] = useState<string>(SortTypes.Popular);
-  const offersState = useAppSelector((state) => state.offers.items);
+  const offersState = useAppSelector((state) => state.offers.offers);
   const offersByCity = offersState
     .slice()
     .filter((item) => item.city.name === city);
@@ -25,7 +25,12 @@ function OffersList({ city }: OffersListProps): JSX.Element {
 
   const handleFavoriteChange = (id: string) => {
     dispatch(offersAction.setFavorite(id));
-    dispatch(favoriteOffersAction.setFavorite(id));
+    const foundOffer = offersState.find((offer) => offer.id === id);
+    if(foundOffer) {
+      const favoriteStatus = foundOffer.isFavorite ? 0 : 1;
+      dispatch(favoriteOffersExtraAction.setFavoriteOffer({ offerId: id, status: favoriteStatus }));
+      dispatch(favoriteOffersExtraAction.fetchFavoriteOffers());
+    }
   };
 
   const handleMouseEnter = (id: string) => setActiveOfferCard(id);

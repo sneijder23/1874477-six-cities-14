@@ -3,16 +3,25 @@ import { OffersList } from '../components/offers/offers-list';
 import { City } from '../types-ts/city';
 import { Tabs } from '../components/tabs/tabs';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
-import { offersAction } from '../store/slice/offers';
+import { offersAction, offersExtraAction } from '../store/slice/offers';
 import { CITY_MAP } from '../const';
+import { useEffect } from 'react';
+import { Spinner } from './loading-screen';
 
 function Main(): JSX.Element {
   const dispatch = useAppDispatch();
   const stateCity = useAppSelector((state) => state.offers.city);
+  const isOffersLoading = useAppSelector(
+    (state) => state.offers.isOffersLoading
+  );
 
   const handleCityClick = (city: City) => {
     dispatch(offersAction.setCitySelect(city.name));
   };
+
+  useEffect(() => {
+    dispatch(offersExtraAction.fetchAllOffers());
+  }, [dispatch]);
 
   return (
     <div className="page page--gray page--main">
@@ -24,9 +33,14 @@ function Main(): JSX.Element {
           selectedCity={CITY_MAP[stateCity]}
           handleCityClick={handleCityClick}
         />
-        <div className="cities">
-          <OffersList city={stateCity} />
-        </div>
+        {isOffersLoading ? (
+          <Spinner />
+        ) : (
+          <div className="cities">
+            <OffersList city={stateCity} />
+          </div>
+        )}
+        ;
       </main>
     </div>
   );

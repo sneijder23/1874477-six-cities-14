@@ -7,19 +7,10 @@ import { Favorities } from '../../pages/favorities';
 import { Error } from '../../pages/error';
 import { PrivateRoute } from '../route/private-route';
 import { City } from '../../types-ts/city';
-import { Spinner } from '../../pages/loading-screen';
 import { useAppSelector } from '../../hooks/store';
 
 function App(): JSX.Element {
   const authorizationStatus = useAppSelector((state) => state.user.authStatus);
-
-  const isOffersLoading = useAppSelector(
-    (state) => state.offers.isOffersLoading
-  );
-
-  if (isOffersLoading) {
-    return <Spinner />;
-  }
 
   return (
     <BrowserRouter>

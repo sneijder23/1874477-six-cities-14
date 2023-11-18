@@ -4,7 +4,7 @@ import { ServerOffer } from '../../types-ts/offer';
 import { Card } from '../card/card';
 import { useAppDispatch } from '../../hooks/store';
 import { offersAction } from '../../store/slice/offers';
-import { favoriteOffersAction } from '../../store/slice/favorite';
+import { favoriteOffersAction, favoriteOffersExtraAction } from '../../store/slice/favorite';
 
 type FavoriteListProps = {
   city: City;
@@ -21,6 +21,7 @@ function FavoriteList({
   const handleFavoriteChange = (id: string) => {
     dispatch(offersAction.setFavorite(id));
     dispatch(favoriteOffersAction.removeFavorite(id));
+    dispatch(favoriteOffersExtraAction.setFavoriteOffer({offerId: id, status: 0}));
   };
 
   return (

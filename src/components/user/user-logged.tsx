@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
-import { MouseEvent, useEffect } from 'react';
+import { MouseEvent, memo, useEffect } from 'react';
 import { AppRoute } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
 import { logout } from '../../store/thunk/auth';
 import { favoriteOffersExtraAction } from '../../store/slice/favorite';
 
-function UserLogged() {
+function UserLoggedComponent() {
   const dispatch = useAppDispatch();
   const userData = useAppSelector((state) => state.user.info);
-  const userFavorites = useAppSelector((state) => state.favoriteOffers.offers);
+  const userFavorites = useAppSelector((state) => state.favoriteOffers.count);
 
   const handleButtonClick = (evt: MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
@@ -39,7 +39,7 @@ function UserLogged() {
             </span>
           </Link>
           <span className="header__favorite-count">
-            <Link to={AppRoute.Favorites}>{userFavorites.length}</Link>
+            <Link to={AppRoute.Favorites}>{userFavorites}</Link>
           </span>
         </li>
         <li className="header__nav-item">
@@ -56,4 +56,4 @@ function UserLogged() {
   );
 }
 
-export { UserLogged };
+export const UserLogged = memo(UserLoggedComponent);

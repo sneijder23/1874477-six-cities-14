@@ -3,12 +3,12 @@ import { ServerOffer } from '../../types-ts/offer';
 import { fetchNearByOffers } from '../thunk/offers';
 
 interface NearbyOffersState {
-  offers: ServerOffer[] | null;
+  offers: ServerOffer[];
   isOffersLoading: boolean;
 }
 
 const initialState: NearbyOffersState = {
-  offers: null,
+  offers: [],
   isOffersLoading: false,
 };
 
@@ -27,17 +27,25 @@ const processPending = (state: NearbyOffersState) => {
 };
 
 export const nearbyOffersSlice = createSlice({
+  name: 'nearbyOffers',
+  initialState,
+  reducers: {
+    setFavorite(state, action: PayloadAction<string>) {
+      const offerId = action.payload;
+      const foundOffer = state.offers.find((offer) => offer.id === offerId);
+
+      if (foundOffer) {
+        foundOffer.isFavorite = !foundOffer.isFavorite;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchNearByOffers.pending, processPending);
     builder.addCase(fetchNearByOffers.fulfilled, processSuccess);
     builder.addCase(fetchNearByOffers.rejected, processFailed);
 
-  },
-  name: 'nearbyOffers',
-  initialState,
-  reducers: {
   }
 });
 
-export const nearbyOffersAction = { fetchNearByOffers };
-export const nearbyOffersActionSlice = nearbyOffersSlice.actions;
+export const nearbyOffersExtraAction = { fetchNearByOffers };
+export const nearbyOffersAction = nearbyOffersSlice.actions;

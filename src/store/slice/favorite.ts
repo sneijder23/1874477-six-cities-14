@@ -5,16 +5,21 @@ import { fetchFavoriteOffers, setFavoriteOffer } from '../thunk/favorite';
 interface FavoriteOffersState {
   offers: ServerOffer[];
   isOffersLoading: boolean;
+  count: number;
+  countId: string[];
 }
 
 const initialState: FavoriteOffersState = {
   offers: [],
   isOffersLoading: false,
+  count: 0,
+  countId: [],
 };
 
 const processSuccess = (state: FavoriteOffersState, action: PayloadAction<ServerOffer[]>) => {
   state.offers = action.payload;
   state.isOffersLoading = false;
+  state.count = action.payload.length;
 };
 
 
@@ -52,8 +57,26 @@ export const favoriteOffersSlice = createSlice({
     builder.addCase(fetchFavoriteOffers.pending, processPending);
     builder.addCase(fetchFavoriteOffers.fulfilled, processSuccess);
     builder.addCase(fetchFavoriteOffers.rejected, processFailed);
-    builder.addCase(setFavoriteOffer.fulfilled, () => {
-      fetchFavoriteOffers();
+    builder.addCase(setFavoriteOffer.fulfilled, (state, action) => {
+      const status = action.meta.arg.status;
+      const offerId = action.meta.arg.offerId;
+
+      switch (status) {
+        case 1:
+          if (!state.countId.includes(offerId)) {
+            state.count += 1;
+            state.countId.push(offerId);
+          }
+          break;
+        case 0:
+          if (state.countId.includes(offerId)) {
+            state.count -= 1;
+            state.countId = state.countId.filter((id) => id !== offerId);
+          }
+          break;
+        default:
+          break;
+      }
     });
   }
 });

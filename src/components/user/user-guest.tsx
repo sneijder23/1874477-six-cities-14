@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
+import { memo } from 'react';
 
-function UserGuest() {
+function UserGuestComponent() {
   return (
     <ul className="header__nav-list">
       <li className="header__nav-item user">
@@ -17,4 +18,4 @@ function UserGuest() {
   );
 }
 
-export { UserGuest };
+export const UserGuest = memo(UserGuestComponent);

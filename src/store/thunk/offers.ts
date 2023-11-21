@@ -7,7 +7,7 @@ import { offersAction } from '../slice/offers';
 
 
 export const fetchAllOffers = createAsyncThunk<ServerOffer[], undefined, ThunkObjType>(
-  'data/fetchOffers',
+  'offers/fetchOffers',
   async (_arg, { extra: api }) => {
     const response = await api.get<ServerOffer[]>(APIRoute.Offers);
     return response.data;
@@ -15,7 +15,7 @@ export const fetchAllOffers = createAsyncThunk<ServerOffer[], undefined, ThunkOb
 );
 
 export const fetchOneOffer = createAsyncThunk<ServerOffer, ServerOffer['id'], ThunkObjType>(
-  'data/fetchOneOffer',
+  'offer/fetchOneOffer',
   async (offerId, { extra: api }) => {
     const response = await api.get<ServerOffer>(`${APIRoute.Offers}/${offerId}`);
     return response.data;
@@ -23,7 +23,7 @@ export const fetchOneOffer = createAsyncThunk<ServerOffer, ServerOffer['id'], Th
 );
 
 export const fetchNearByOffers = createAsyncThunk<ServerOffer[], ServerOffer['id'], ThunkObjType>(
-  'data/fetchNearByOffer',
+  'nearbyOffers/fetchNearByOffer',
   async (offerId, { extra: api }) => {
     const response = await api.get<ServerOffer[]>(`${APIRoute.Offers}/${offerId}/nearby`);
     return response.data;

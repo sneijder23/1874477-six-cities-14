@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { SortTypes } from '../../const';
 import classNames from 'classnames';
 import { ServerOffer } from '../../types-ts/offer';
@@ -23,7 +23,7 @@ export function CreateSortingOffers(activeSort: string, offers: ServerOffer[]) {
   }
 }
 
-function Sort({ activeSort, setActiveSort }: SortProps): JSX.Element {
+function SortComponent({ activeSort, setActiveSort }: SortProps): JSX.Element {
   const [isOpened, setIsOpened] = useState(false);
 
   const toggleOptions = () => {
@@ -69,4 +69,4 @@ function Sort({ activeSort, setActiveSort }: SortProps): JSX.Element {
   );
 }
 
-export { Sort };
+export const Sort = memo(SortComponent);

@@ -10,7 +10,7 @@ function Error(): JSX.Element {
 
       <main className="page__main page__main--index page__main--index-empty">
         <div className="cities">
-          <div className="cities__places-container cities__places-container--empty container">
+          <div className="cities__places-container cities__places-container--empty container" style={{ flexDirection: 'column', alignItems: 'center' }}>
             <h1 className="cities__error-pages">404 Not Found</h1>
             <Link className="cities__error-link" to="/">
               <span className="citier__error-message">

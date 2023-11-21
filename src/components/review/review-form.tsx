@@ -1,12 +1,15 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, memo } from 'react';
 import { MIN_TEXTAREA_LENGTH, MAX_TEXTAREA_LENGTH } from '../../const';
+import { useAppDispatch } from '../../hooks/store';
+import { reviewsExtraAction } from '../../store/slice/reviews';
 
-function ReviewForm(): JSX.Element {
+function ReviewFormComponent({id}: { id: string }): JSX.Element {
   const initialFormData = {
     rating: '',
-    review: '',
+    comment: '',
   };
-
+  const offerId = id;
+  const dispatch = useAppDispatch();
   const formRef = useRef<HTMLFormElement>(null);
 
   const [formData, setFormData] = useState(initialFormData);
@@ -15,18 +18,23 @@ function ReviewForm(): JSX.Element {
     evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = evt.target;
+
     setFormData({ ...formData, [name]: value });
   };
 
   const hadleFormSubmit = (evt: React.FormEvent) => {
     evt.preventDefault();
-    setFormData(initialFormData);
-    formRef.current?.reset();
+    const rating = parseFloat(formData.rating);
+    dispatch(reviewsExtraAction.postReview({ offerId, rating, comment: formData.comment })).then(() => {
+      dispatch(reviewsExtraAction.fetchReviews(offerId));
+      setFormData(initialFormData);
+      formRef.current?.reset();
+    });
   };
 
   const isValidate =
-    formData.review.length < MIN_TEXTAREA_LENGTH ||
-    formData.review.length > MAX_TEXTAREA_LENGTH ||
+    formData.comment.length < MIN_TEXTAREA_LENGTH ||
+    formData.comment.length > MAX_TEXTAREA_LENGTH ||
     formData.rating === '';
 
   return (
@@ -37,7 +45,7 @@ function ReviewForm(): JSX.Element {
       action="#"
       method="post"
     >
-      <label className="reviews__label form__label" htmlFor="review">
+      <label className="reviews__label form__label" htmlFor="comment">
         Your review
       </label>
       <div className="reviews__rating-form form__rating">
@@ -134,8 +142,8 @@ function ReviewForm(): JSX.Element {
       <textarea
         onChange={handleFieldChange}
         className="reviews__textarea form__textarea"
-        id="review"
-        name="review"
+        id="comment"
+        name="comment"
         minLength={50}
         maxLength={300}
         placeholder="Tell how was your stay, what you like and what can be improved"
@@ -159,4 +167,4 @@ function ReviewForm(): JSX.Element {
   );
 }
 
-export { ReviewForm };
+export const ReviewForm = memo(ReviewFormComponent);

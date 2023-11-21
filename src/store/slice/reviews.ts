@@ -1,13 +1,15 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Comments } from '../../mocks/reviews';
 import { Review } from '../../types-ts/review';
+import { fetchReviews, postReview } from '../thunk/review';
 
 interface ReviewsState {
-  items: Review[];
+  reviews: Review[];
+  isPosting: boolean;
 }
 
 const initialState: ReviewsState = {
-  items: Comments,
+  reviews: [],
+  isPosting: false,
 };
 
 export const reviewsSlice = createSlice({
@@ -15,12 +17,30 @@ export const reviewsSlice = createSlice({
   initialState,
   reducers: {
     addReviewList(state, action: PayloadAction<Review[]>) {
-      state.items = action.payload;
+      state.reviews = action.payload;
     },
     addReviewItem(state, action: PayloadAction<Review[]>) {
-      state.items = [...state.items, action.payload] as Review[];
+      state.reviews = [...state.reviews, action.payload] as Review[];
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchReviews.rejected, (state) => {
+      state.reviews = [];
+    });
+    builder.addCase(fetchReviews.fulfilled, (state, action: PayloadAction<Review[]>) => {
+      state.reviews = action.payload;
+    });
+    builder.addCase(postReview.pending, (state) => {
+      state.isPosting = true;
+    });
+    builder.addCase(postReview.fulfilled, (state, action) => {
+      const offerId = action.meta.arg.offerId;
+
+      state.isPosting = false;
+      fetchReviews(offerId);
+    });
   }
 });
 
+export const reviewsExtraAction = {fetchReviews, postReview};
 export const reviewssAction = reviewsSlice.actions;

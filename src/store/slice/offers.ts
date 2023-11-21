@@ -3,23 +3,24 @@ import { DEFAULT_CITY } from '../../const';
 import { ServerOffer } from '../../types-ts/offer';
 import { clearError, fetchAllOffers, fetchOneOffer } from '../thunk/offers';
 
-
 interface OffersState {
   offers: ServerOffer[];
-  offer: ServerOffer | null;
+  offer?: ServerOffer;
   city: string;
   activePoint?: string;
   isOffersLoading: boolean;
   error: string | null;
+  redirectToErrorPage: boolean;
 }
 
 const initialState: OffersState = {
   offers: [],
-  offer: null,
+  offer: undefined,
   city: DEFAULT_CITY,
   activePoint: undefined,
   isOffersLoading: false,
   error: null,
+  redirectToErrorPage: false,
 };
 
 const processOneOfferSuccess = (state: OffersState, action: PayloadAction<ServerOffer>) => {
@@ -32,9 +33,9 @@ const processSuccess = (state: OffersState, action: PayloadAction<ServerOffer[]>
   state.isOffersLoading = false;
 };
 
-
 const processFailed = (state: OffersState) => {
   state.isOffersLoading = false;
+  state.redirectToErrorPage = true;
   clearError();
 };
 
@@ -70,6 +71,14 @@ export const offersSlice = createSlice({
     },
     setError(state, action: PayloadAction<string | null>) {
       state.error = action.payload;
+    },
+    setOneOfferFavorite: (state, action: PayloadAction<ServerOffer>) => {
+      if (state.offer) {
+        state.offer.isFavorite = !action.payload.isFavorite;
+      }
+    },
+    resetRedirectToErrorPage: (state) => {
+      state.redirectToErrorPage = false;
     },
   }
 });

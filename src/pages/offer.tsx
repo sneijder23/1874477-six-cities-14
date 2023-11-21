@@ -1,42 +1,98 @@
 import { Header } from '../components/header/header';
 import { useDocumentTitle } from '../hooks/document-title';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { capitalizeFirstLetter } from '../utils/utils';
-import classNames from 'classnames';
 import { ReviewForm } from '../components/review/review-form';
 import { ReviewList } from '../components/review/review-list';
 import { Map } from '../components/map/map';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
 import { Card } from '../components/card/card';
-import { useEffect } from 'react';
-import { offersExtraAction } from '../store/slice/offers';
-import { nearbyOffersAction } from '../store/slice/neaby-offers';
+import { useCallback, useEffect } from 'react';
+import { offersAction, offersExtraAction } from '../store/slice/offers';
+import {
+  nearbyOffersAction,
+  nearbyOffersExtraAction,
+} from '../store/slice/neaby-offers';
 import { Spinner } from './loading-screen';
-import { AuthorizationStatus } from '../const';
+import { AppRoute, AuthorizationStatus } from '../const';
+import { favoriteOffersExtraAction } from '../store/slice/favorite';
+import { FavoriteButton } from '../components/favorite/favorite-button';
+import { reviewsExtraAction } from '../store/slice/reviews';
 
 function Offer(): JSX.Element {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { id } = useParams();
+  const reviewsState = useAppSelector((state) => state.reviews.reviews);
+  const redirectToErrorPage = useAppSelector((state) => state.offers.redirectToErrorPage);
+  const offersState = useAppSelector((state) => state.offers.offer);
+  const nerbyOffersState = useAppSelector((state) => state.nearbyOffers.offers);
+  const isOffersLoading = useAppSelector(
+    (state) => state.offers.isOffersLoading
+  );
+  const isAuth = useAppSelector(
+    (state) => state.user.authStatus === AuthorizationStatus.Auth
+  );
+
+  const handleFavoriteClick = useCallback(() => {
+    if (offersState) {
+      const updatedFavoriteStatus = !offersState.isFavorite ? 1 : 0;
+
+      dispatch(offersAction.setOneOfferFavorite(offersState));
+      dispatch(
+        favoriteOffersExtraAction.setFavoriteOffer({
+          offerId: offersState.id,
+          status: updatedFavoriteStatus,
+        })
+      );
+      dispatch(favoriteOffersExtraAction.fetchFavoriteOffers());
+
+      if (!isAuth) {
+        navigate(AppRoute.Login);
+      }
+    }
+  }, [dispatch, isAuth, navigate, offersState]);
+
+  const handleFavoriteChange = useCallback(
+    (offerId: string) => {
+      dispatch(nearbyOffersAction.setFavorite(offerId));
+      const foundOffer = nerbyOffersState.find((offer) => offer.id === offerId);
+      if (foundOffer) {
+        const favoriteStatus = foundOffer.isFavorite ? 0 : 1;
+        dispatch(
+          favoriteOffersExtraAction.setFavoriteOffer({
+            offerId: offerId,
+            status: favoriteStatus,
+          })
+        );
+        dispatch(favoriteOffersExtraAction.fetchFavoriteOffers());
+      }
+      if (!isAuth) {
+        navigate(AppRoute.Login);
+      }
+    },
+    [dispatch, isAuth, navigate, nerbyOffersState]
+  );
+
+  useDocumentTitle('Offer');
+
+  useEffect(() => {
+    if (redirectToErrorPage) {
+      dispatch(offersAction.resetRedirectToErrorPage());
+      navigate(AppRoute.Error);
+    }
+  }, [dispatch, navigate, redirectToErrorPage]);
 
   useEffect(() => {
     if (id) {
       dispatch(offersExtraAction.fetchOneOffer(id));
-      dispatch(nearbyOffersAction.fetchNearByOffers(id));
+      dispatch(nearbyOffersExtraAction.fetchNearByOffers(id));
+      dispatch(reviewsExtraAction.fetchReviews(id));
     }
   }, [dispatch, id]);
 
-  const reviewsState = useAppSelector((state) => state.reviews.items);
-  const offersState = useAppSelector((state) => state.offers.offer);
-  const nerbyOffersState = useAppSelector((state) => state.nearbyOffers.offers);
-  const isOffersLoading = useAppSelector((state) => state.offers.isOffersLoading);
-  const isAuth = useAppSelector((state) => state.user.authStatus === AuthorizationStatus.Auth);
-
-  const handleFavoriteChange = () => {};
-
-  useDocumentTitle('Offer');
-
   if (!offersState || !nerbyOffersState || isOffersLoading) {
-    return (<Spinner />);
+    return <Spinner />;
   }
 
   return (
@@ -68,18 +124,7 @@ function Offer(): JSX.Element {
               )}
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">{offersState.title}</h1>
-                <button
-                  className={classNames('offer__bookmark-button', 'button', {
-                    'place-card__bookmark-button--active':
-                      offersState.isFavorite,
-                  })}
-                  type="button"
-                >
-                  <svg className="offer__bookmark-icon" width="31" height="33">
-                    <use xlinkHref="#icon-bookmark"></use>
-                  </svg>
-                  <span className="visually-hidden">To bookmarks</span>
-                </button>
+                <FavoriteButton className="offer" bigIcon isActive={offersState.isFavorite} isAuth={isAuth} handleFavoriteClick={handleFavoriteClick}/>
               </div>
               <div className="offer__rating rating">
                 <div className="offer__stars rating__stars">
@@ -149,8 +194,7 @@ function Offer(): JSX.Element {
                   <span className="reviews__amount">{reviewsState.length}</span>
                 </h2>
                 <ReviewList reviews={reviewsState} />
-                {isAuth &&
-                <ReviewForm />}
+                {isAuth && <ReviewForm id={offersState.id} />}
               </section>
             </div>
           </div>
@@ -168,15 +212,15 @@ function Offer(): JSX.Element {
               Other places in the neighbourhood
             </h2>
             <div className="near-places__list places__list">
-              {Array.isArray(nerbyOffersState) &&
-                nerbyOffersState.map((offer) => (
-                  <Card
-                    key={offer.id}
-                    screenName="near-places"
-                    offer={offer}
-                    handleFavoriteChange={handleFavoriteChange}
-                  />
-                ))}
+              {nerbyOffersState.map((offer) => (
+                <Card
+                  key={offer.id}
+                  screenName="near-places"
+                  offer={offer}
+                  isAuth={isAuth}
+                  handleFavoriteChange={handleFavoriteChange}
+                />
+              ))}
             </div>
           </section>
         </div>

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { MAX_REVIEW_LENGHT } from '../../const';
 import { Review } from '../../types-ts/review';
 import { ReviewItem } from './review-item';
@@ -6,7 +7,7 @@ type ReviewListProps = {
   reviews: Review[];
 };
 
-function ReviewList({ reviews }: ReviewListProps): JSX.Element {
+function ReviewListComponent({ reviews }: ReviewListProps): JSX.Element {
   return (
     <ul className="reviews__list">
       {reviews
@@ -19,4 +20,4 @@ function ReviewList({ reviews }: ReviewListProps): JSX.Element {
   );
 }
 
-export { ReviewList };
+export const ReviewList = memo(ReviewListComponent);

@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/store';
+import { memo } from 'react';
 
-function Logo(): JSX.Element {
+function LogoComponent(): JSX.Element {
   const cityState = useAppSelector((state) => state.offers.city);
 
   return (
@@ -13,4 +14,4 @@ function Logo(): JSX.Element {
   );
 }
 
-export { Logo };
+export const Logo = memo(LogoComponent);

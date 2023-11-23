@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus } from '../../const';
-import { Spinner } from '../../pages/loading-screen';
+import { LoadingScreen } from '../../pages/loading-screen';
 
 type PrivateRouteProps = {
   authorizationStatus: AuthorizationStatus;
@@ -11,7 +11,7 @@ function PrivateRoute(props: PrivateRouteProps): JSX.Element {
   const { authorizationStatus, children } = props;
 
   if (authorizationStatus === AuthorizationStatus.Unknown) {
-    return <Spinner />;
+    return <LoadingScreen />;
   }
 
   return authorizationStatus === AuthorizationStatus.Auth ? (

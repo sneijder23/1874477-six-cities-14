@@ -23,6 +23,9 @@ function proccesFailed(state: UserSlice) {
 }
 
 export const userSlice = createSlice({
+  name: 'user',
+  initialState,
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(checkAuth.fulfilled, proccesSuccess);
     builder.addCase(checkAuth.rejected, proccesFailed);
@@ -33,9 +36,6 @@ export const userSlice = createSlice({
       state.authStatus = AuthorizationStatus.NoAuth;
     });
   },
-  name: 'user',
-  initialState,
-  reducers: {}
 });
 
 export const userAction = { checkAuth, login, logout };

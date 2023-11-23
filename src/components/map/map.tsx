@@ -29,8 +29,10 @@ function Map({ className, city, points, activePoint }: MapProps): JSX.Element {
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
+
   useEffect(() => {
     if (map) {
+      const activeOffer = points.find((point) => point.id === activePoint);
       points.forEach((point) => {
         leaflet
           .marker(
@@ -47,6 +49,10 @@ function Map({ className, city, points, activePoint }: MapProps): JSX.Element {
           )
           .addTo(map);
       });
+
+      if (activeOffer) {
+        map.setView([activeOffer.location.latitude, activeOffer.location.longitude], activeOffer.city.location.zoom);
+      }
     }
   }, [map, points, activePoint]);
   return <section className={`${className} map`} ref={mapRef}></section>;

@@ -12,17 +12,22 @@ const initialState: ReviewsState = {
   isPosting: false,
 };
 
+const processPostPending = (state: ReviewsState) => {
+  state.isPosting = true;
+};
+
+const processPostSuccess = (state: ReviewsState) => {
+  state.isPosting = false;
+};
+
+const processPostFailed = (state: ReviewsState) => {
+  state.isPosting = false;
+};
+
 export const reviewsSlice = createSlice({
   name: 'reviews',
   initialState,
-  reducers: {
-    addReviewList(state, action: PayloadAction<Review[]>) {
-      state.reviews = action.payload;
-    },
-    addReviewItem(state, action: PayloadAction<Review[]>) {
-      state.reviews = [...state.reviews, action.payload] as Review[];
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchReviews.rejected, (state) => {
       state.reviews = [];
@@ -30,17 +35,11 @@ export const reviewsSlice = createSlice({
     builder.addCase(fetchReviews.fulfilled, (state, action: PayloadAction<Review[]>) => {
       state.reviews = action.payload;
     });
-    builder.addCase(postReview.pending, (state) => {
-      state.isPosting = true;
-    });
-    builder.addCase(postReview.fulfilled, (state, action) => {
-      const offerId = action.meta.arg.offerId;
-
-      state.isPosting = false;
-      fetchReviews(offerId);
-    });
+    builder.addCase(postReview.pending, processPostPending);
+    builder.addCase(postReview.fulfilled, processPostSuccess);
+    builder.addCase(postReview.rejected, processPostFailed);
   }
 });
 
-export const reviewsExtraAction = {fetchReviews, postReview};
+export const reviewsExtraAction = { fetchReviews, postReview };
 export const reviewssAction = reviewsSlice.actions;

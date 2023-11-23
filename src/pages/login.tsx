@@ -1,4 +1,4 @@
-import { FormEvent, MouseEvent, useRef } from 'react';
+import { FormEvent, MouseEvent, memo, useRef } from 'react';
 import { Header } from '../components/header/header';
 import { useDocumentTitle } from '../hooks/document-title';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
@@ -7,11 +7,14 @@ import { login } from '../store/thunk/auth';
 import { AuthorizationStatus } from '../const';
 import { offersAction } from '../store/slice/offers';
 import { getRandomCity } from '../utils/utils';
+import { toast } from 'react-toastify';
 
-function Login(): JSX.Element {
+function LoginPage(): JSX.Element {
   useDocumentTitle('Login');
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
+  const loginRegExp = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  const passwordRegExp = /^(?=.*[A-Za-z])(?=.*\d).{2,}$/;
   const isAuth = useAppSelector((state) => state.user.authStatus);
   const citySelect = useAppSelector((state) => state.offers.city);
   const randomCity = getRandomCity();
@@ -23,12 +26,21 @@ function Login(): JSX.Element {
     evt.preventDefault();
 
     if (loginRef.current?.value && passwordRef.current?.value) {
+      if (!loginRegExp.test(loginRef.current?.value)) {
+        return toast.warn('Неверный формат логина email');
+      }
+
+      if (!passwordRegExp.test(passwordRef.current?.value)) {
+        return toast.warn('Пароль должен содержать минимум одну букву и одну цифру!');
+      }
+
       dispatch(
         login({
           email: loginRef.current.value,
           password: passwordRef.current.value,
         })
       );
+      navigate(-1);
     }
   };
 
@@ -103,4 +115,4 @@ function Login(): JSX.Element {
   );
 }
 
-export { Login };
+export const Login = memo(LoginPage);

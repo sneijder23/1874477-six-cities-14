@@ -1,23 +1,25 @@
 import { Link } from 'react-router-dom';
-import { MouseEvent, memo, useEffect } from 'react';
+import { MouseEvent, memo, useCallback, useEffect } from 'react';
 import { AppRoute } from '../../const';
-import { useAppDispatch, useAppSelector } from '../../hooks/store';
+import { useAppDispatch } from '../../hooks/store';
 import { logout } from '../../store/thunk/auth';
+import { ServerUser } from '../../types-ts/user';
 import { favoriteOffersExtraAction } from '../../store/slice/favorite';
 
-function UserLoggedComponent() {
-  const dispatch = useAppDispatch();
-  const userData = useAppSelector((state) => state.user.info);
-  const userFavorites = useAppSelector((state) => state.favoriteOffers.count);
 
-  const handleButtonClick = (evt: MouseEvent<HTMLAnchorElement>) => {
+function UserLoggedComponent({user, favorites}: {user: ServerUser; favorites: number}) {
+  const dispatch = useAppDispatch();
+  const userData = user;
+  const userFavorites = favorites;
+  const handleButtonClick = useCallback((evt: MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
     dispatch(logout());
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     dispatch(favoriteOffersExtraAction.fetchFavoriteOffers());
-  }, [dispatch]);
+  }, [dispatch, userData]);
 
   return (
     userData && (

@@ -1,23 +1,23 @@
 import { Header } from '../components/header/header';
-import { OffersList } from '../components/offers/offers-list';
+import { OffersList } from '../components/offers-list/offers-list';
 import { City } from '../types-ts/city';
 import { Tabs } from '../components/tabs/tabs';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
 import { offersAction, offersExtraAction } from '../store/slice/offers';
 import { CITY_MAP } from '../const';
-import { useEffect } from 'react';
-import { Spinner } from './loading-screen';
+import { memo, useCallback, useEffect } from 'react';
+import { LoadingScreen } from './loading-screen';
 
-function Main(): JSX.Element {
+function MainPage(): JSX.Element {
   const dispatch = useAppDispatch();
   const stateCity = useAppSelector((state) => state.offers.city);
   const isOffersLoading = useAppSelector(
     (state) => state.offers.isOffersLoading
   );
 
-  const handleCityClick = (city: City) => {
+  const handleCityClick = useCallback((city: City) => {
     dispatch(offersAction.setCitySelect(city.name));
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(offersExtraAction.fetchAllOffers());
@@ -34,7 +34,7 @@ function Main(): JSX.Element {
           handleCityClick={handleCityClick}
         />
         {isOffersLoading ? (
-          <Spinner />
+          <LoadingScreen />
         ) : (
           <div className="cities">
             <OffersList city={stateCity} />
@@ -46,4 +46,4 @@ function Main(): JSX.Element {
   );
 }
 
-export { Main };
+export const Main = memo(MainPage);

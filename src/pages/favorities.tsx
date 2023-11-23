@@ -1,35 +1,35 @@
-import { FavoriteList } from '../components/favorite/favorite-list';
-import { FavoriteEmpty } from '../components/favorite/favorite-empty';
+import { FavoriteList } from '../components/favorite-list/favorite-list';
+import { FavoriteEmpty } from '../components/favorite-empty/favorite-empty';
 import { Header } from '../components/header/header';
 import { useDocumentTitle } from '../hooks/document-title';
 import { useAppSelector } from '../hooks/store';
 import { City } from '../types-ts/city';
 import { ServerOffer } from '../types-ts/offer';
+import { memo, useMemo } from 'react';
+import { Footer } from '../components/footer/footer';
 
-function Favorities(): JSX.Element {
+function FavoritiesPage(): JSX.Element {
   useDocumentTitle('Favorites');
   const favoriteState = useAppSelector((state) => state.favoriteOffers.offers);
 
-  const favoritesList: { city: City; offers: ServerOffer[] }[] =
-    favoriteState.reduce<{ city: City; offers: ServerOffer[] }[]>(
-      (acc, cur) => {
-        if (cur.isFavorite) {
-          const existingCity = acc.find(
-            (item) => item.city.name === cur.city.name
-          );
-          if (existingCity) {
-            existingCity.offers.push(cur);
-          } else {
-            acc.push({
-              city: cur.city,
-              offers: [cur],
-            });
-          }
+  const favoritesList: { city: City; offers: ServerOffer[] }[] = useMemo(() =>
+    favoriteState.reduce<{ city: City; offers: ServerOffer[] }[]>((acc, cur) => {
+      if (cur.isFavorite) {
+        const existingCity = acc.find(
+          (item) => item.city.name === cur.city.name
+        );
+        if (existingCity) {
+          existingCity.offers.push(cur);
+        } else {
+          acc.push({
+            city: cur.city,
+            offers: [cur],
+          });
         }
-        return acc;
-      },
-      []
-    );
+      }
+      return acc;
+    },[]
+    ), [favoriteState]);
 
   const listEmpty = favoritesList.length === 0;
 
@@ -48,19 +48,9 @@ function Favorities(): JSX.Element {
           </div>
         </main>
       )}
-      <footer className="footer container">
-        <a className="footer__logo-link" href="main.html">
-          <img
-            className="footer__logo"
-            src="img/logo.svg"
-            alt="6 cities logo"
-            width="64"
-            height="33"
-          />
-        </a>
-      </footer>
+      <Footer />
     </div>
   );
 }
 
-export { Favorities };
+export const Favorities = memo(FavoritiesPage);

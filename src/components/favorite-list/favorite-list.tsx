@@ -2,32 +2,26 @@ import { Link } from 'react-router-dom';
 import { City } from '../../types-ts/city';
 import { ServerOffer } from '../../types-ts/offer';
 import { Card } from '../card/card';
-import { useAppDispatch } from '../../hooks/store';
-import { offersAction } from '../../store/slice/offers';
-import { favoriteOffersAction, favoriteOffersExtraAction } from '../../store/slice/favorite';
-import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks/store';
+import { favoriteOffersExtraAction } from '../../store/slice/favorite';
+import { memo } from 'react';
+import { AuthorizationStatus } from '../../const';
 
 type FavoriteListProps = {
   city: City;
   offers: ServerOffer[];
 }[];
 
-function FavoriteList({
-  favoriteList,
-}: {
-  favoriteList: FavoriteListProps;
-}): JSX.Element {
+function FavoriteListComponent({ favoriteList }: { favoriteList: FavoriteListProps }): JSX.Element {
   const dispatch = useAppDispatch();
+  const isAuth = useAppSelector((state) => state.user.authStatus === AuthorizationStatus.Auth);
 
   const handleFavoriteChange = (id: string) => {
-    dispatch(offersAction.setFavorite(id));
-    dispatch(favoriteOffersAction.removeFavorite(id));
-    dispatch(favoriteOffersExtraAction.setFavoriteOffer({offerId: id, status: 0}));
+    if(isAuth) {
+      dispatch(favoriteOffersExtraAction.setFavoriteOffer({offerId: id, status: 0}))
+        .then(() => dispatch(favoriteOffersExtraAction.fetchFavoriteOffers()));
+    }
   };
-
-  useEffect(() => {
-    dispatch(favoriteOffersExtraAction.fetchFavoriteOffers());
-  }, [dispatch]);
 
   return (
     <ul className="favorites__list">
@@ -47,7 +41,7 @@ function FavoriteList({
                 screenName="favorites"
                 offer={offer}
                 isAuth
-                handleFavoriteChange={handleFavoriteChange}
+                onFavoriteChange={handleFavoriteChange}
               />
             ))}
           </div>
@@ -57,4 +51,4 @@ function FavoriteList({
   );
 }
 
-export { FavoriteList };
+export const FavoriteList = memo(FavoriteListComponent);

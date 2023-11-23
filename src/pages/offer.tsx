@@ -2,76 +2,66 @@ import { Header } from '../components/header/header';
 import { useDocumentTitle } from '../hooks/document-title';
 import { useNavigate, useParams } from 'react-router-dom';
 import { capitalizeFirstLetter } from '../utils/utils';
-import { ReviewForm } from '../components/review/review-form';
-import { ReviewList } from '../components/review/review-list';
+import { ReviewForm } from '../components/review-form/review-form';
+import { ReviewList } from '../components/review-list/review-list';
 import { Map } from '../components/map/map';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
 import { Card } from '../components/card/card';
-import { useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { offersAction, offersExtraAction } from '../store/slice/offers';
-import {
-  nearbyOffersAction,
-  nearbyOffersExtraAction,
-} from '../store/slice/neaby-offers';
-import { Spinner } from './loading-screen';
+import { nearbyOffersAction, nearbyOffersExtraAction } from '../store/slice/neaby-offers';
+import { LoadingScreen } from './loading-screen';
 import { AppRoute, AuthorizationStatus } from '../const';
 import { favoriteOffersExtraAction } from '../store/slice/favorite';
-import { FavoriteButton } from '../components/favorite/favorite-button';
+import { FavoriteButton } from '../components/favorite-button/favorite-button';
 import { reviewsExtraAction } from '../store/slice/reviews';
 
-function Offer(): JSX.Element {
+function OfferPage(): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
   const reviewsState = useAppSelector((state) => state.reviews.reviews);
   const redirectToErrorPage = useAppSelector((state) => state.offers.redirectToErrorPage);
-  const offersState = useAppSelector((state) => state.offers.offer);
+  const offerState = useAppSelector((state) => state.offers.offer);
   const nerbyOffersState = useAppSelector((state) => state.nearbyOffers.offers);
-  const isOffersLoading = useAppSelector(
-    (state) => state.offers.isOffersLoading
-  );
-  const isAuth = useAppSelector(
-    (state) => state.user.authStatus === AuthorizationStatus.Auth
-  );
+  const isOffersLoading = useAppSelector((state) => state.offers.isOffersLoading);
+  const isAuth = useAppSelector((state) => state.user.authStatus === AuthorizationStatus.Auth);
 
   const handleFavoriteClick = useCallback(() => {
-    if (offersState) {
-      const updatedFavoriteStatus = !offersState.isFavorite ? 1 : 0;
+    if (offerState) {
+      const updatedFavoriteStatus = !offerState.isFavorite ? 1 : 0;
+      dispatch(favoriteOffersExtraAction.setFavoriteOffer({
+        offerId: offerState.id,
+        status: updatedFavoriteStatus,
+      })
+      )
+        .then(() => dispatch(offersAction.setOneOfferFavorite(offerState)))
+        .then(() => dispatch(favoriteOffersExtraAction.fetchFavoriteOffers()));
+    }
 
-      dispatch(offersAction.setOneOfferFavorite(offersState));
+    if (!isAuth) {
+      navigate(AppRoute.Login);
+    }
+  }, [dispatch, isAuth, navigate, offerState]);
+
+  const handleFavoriteChange = useCallback((offerId: string) => {
+    dispatch(nearbyOffersAction.setFavorite(offerId));
+    const foundOffer = nerbyOffersState.find((offer) => offer.id === offerId);
+    if (foundOffer) {
+      const favoriteStatus = foundOffer.isFavorite ? 0 : 1;
       dispatch(
         favoriteOffersExtraAction.setFavoriteOffer({
-          offerId: offersState.id,
-          status: updatedFavoriteStatus,
+          offerId: offerId,
+          status: favoriteStatus,
         })
-      );
-      dispatch(favoriteOffersExtraAction.fetchFavoriteOffers());
-
-      if (!isAuth) {
-        navigate(AppRoute.Login);
-      }
+      )
+        .then(() => dispatch(favoriteOffersExtraAction.fetchFavoriteOffers()));
     }
-  }, [dispatch, isAuth, navigate, offersState]);
-
-  const handleFavoriteChange = useCallback(
-    (offerId: string) => {
-      dispatch(nearbyOffersAction.setFavorite(offerId));
-      const foundOffer = nerbyOffersState.find((offer) => offer.id === offerId);
-      if (foundOffer) {
-        const favoriteStatus = foundOffer.isFavorite ? 0 : 1;
-        dispatch(
-          favoriteOffersExtraAction.setFavoriteOffer({
-            offerId: offerId,
-            status: favoriteStatus,
-          })
-        );
-        dispatch(favoriteOffersExtraAction.fetchFavoriteOffers());
-      }
-      if (!isAuth) {
-        navigate(AppRoute.Login);
-      }
-    },
-    [dispatch, isAuth, navigate, nerbyOffersState]
+    if (!isAuth) {
+      navigate(AppRoute.Login);
+    }
+  },
+  [dispatch, isAuth, navigate, nerbyOffersState]
   );
 
   useDocumentTitle('Offer');
@@ -81,7 +71,7 @@ function Offer(): JSX.Element {
       dispatch(offersAction.resetRedirectToErrorPage());
       navigate(AppRoute.Error);
     }
-  }, [dispatch, navigate, redirectToErrorPage]);
+  }, [dispatch, id, navigate, redirectToErrorPage]);
 
   useEffect(() => {
     if (id) {
@@ -91,25 +81,25 @@ function Offer(): JSX.Element {
     }
   }, [dispatch, id]);
 
-  if (!offersState || !nerbyOffersState || isOffersLoading) {
-    return <Spinner />;
+
+  if (!offerState || !nerbyOffersState || isOffersLoading) {
+    return <LoadingScreen />;
   }
 
   return (
     <div className="page">
       <Header />
-
       <main className="page__main page__main--offer">
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
               <div className="offer__image-wrapper">
-                {offersState.images.map((image) => (
+                {offerState.images.map((image) => (
                   <img
                     key={image}
                     className="offer__image"
                     src={image}
-                    alt={offersState.title}
+                    alt={offerState.title}
                   />
                 ))}
               </div>
@@ -117,48 +107,49 @@ function Offer(): JSX.Element {
           </div>
           <div className="offer__container container">
             <div className="offer__wrapper">
-              {offersState.isPremium && (
+              {offerState.isPremium && (
                 <div className="offer__mark">
                   <span>Premium</span>
                 </div>
               )}
               <div className="offer__name-wrapper">
-                <h1 className="offer__name">{offersState.title}</h1>
-                <FavoriteButton className="offer" bigIcon isActive={offersState.isFavorite} isAuth={isAuth} handleFavoriteClick={handleFavoriteClick}/>
+                <h1 className="offer__name">{offerState.title}</h1>
+                <FavoriteButton
+                  className="offer"
+                  bigIcon
+                  isActive={offerState.isFavorite}
+                  isAuth={isAuth}
+                  handleFavoriteClick={handleFavoriteClick}
+                />
               </div>
               <div className="offer__rating rating">
                 <div className="offer__stars rating__stars">
-                  <span
-                    style={{
-                      width: `${Math.round(offersState.rating) * 20}%`,
-                    }}
-                  >
-                  </span>
+                  <span style={{ width: `${Math.round(offerState.rating) * 20}%` }}></span>
                   <span className="visually-hidden">Rating</span>
                 </div>
                 <span className="offer__rating-value rating__value">
-                  {offersState.rating}
+                  {offerState.rating}
                 </span>
               </div>
               <ul className="offer__features">
                 <li className="offer__feature offer__feature--entire">
-                  {capitalizeFirstLetter(offersState.type)}
+                  {capitalizeFirstLetter(offerState.type)}
                 </li>
                 <li className="offer__feature offer__feature--bedrooms">
-                  {offersState.bedrooms} Bedrooms
+                  {offerState.bedrooms} Bedrooms
                 </li>
                 <li className="offer__feature offer__feature--adults">
-                  Max {offersState.maxAdults} adults
+                  Max {offerState.maxAdults} adults
                 </li>
               </ul>
               <div className="offer__price">
-                <b className="offer__price-value">&euro;{offersState.price}</b>
+                <b className="offer__price-value">&euro;{offerState.price}</b>
                 <span className="offer__price-text">&nbsp;night</span>
               </div>
               <div className="offer__inside">
                 <h2 className="offer__inside-title">What&apos;s inside</h2>
                 <ul className="offer__inside-list">
-                  {offersState.goods.map((good) => (
+                  {offerState.goods.map((good) => (
                     <li key={good} className="offer__inside-item">
                       {good}
                     </li>
@@ -171,21 +162,21 @@ function Offer(): JSX.Element {
                   <div className="offer__avatar-wrapper offer__avatar-wrapper--pro user__avatar-wrapper">
                     <img
                       className="offer__avatar user__avatar"
-                      src={offersState.host.avatarUrl}
+                      src={offerState.host.avatarUrl}
                       width="74"
                       height="74"
                       alt="Host avatar"
                     />
                   </div>
                   <span className="offer__user-name">
-                    {offersState.host.name}
+                    {offerState.host.name}
                   </span>
                   <span className="offer__user-status">
-                    {offersState.host.isPro}
+                    {offerState.host.isPro}
                   </span>
                 </div>
                 <div className="offer__description">
-                  <p className="offer__text">{offersState.description}</p>
+                  <p className="offer__text">{offerState.description}</p>
                 </div>
               </div>
               <section className="offer__reviews reviews">
@@ -194,14 +185,14 @@ function Offer(): JSX.Element {
                   <span className="reviews__amount">{reviewsState.length}</span>
                 </h2>
                 <ReviewList reviews={reviewsState} />
-                {isAuth && <ReviewForm id={offersState.id} />}
+                {isAuth && <ReviewForm id={offerState.id} />}
               </section>
             </div>
           </div>
           <Map
-            key={offersState.id}
+            key={offerState.id}
             className={'offer__map'}
-            city={offersState.city}
+            city={offerState.city}
             points={nerbyOffersState}
             activePoint={id!}
           />
@@ -218,7 +209,7 @@ function Offer(): JSX.Element {
                   screenName="near-places"
                   offer={offer}
                   isAuth={isAuth}
-                  handleFavoriteChange={handleFavoriteChange}
+                  onFavoriteChange={handleFavoriteChange}
                 />
               ))}
             </div>
@@ -229,4 +220,4 @@ function Offer(): JSX.Element {
   );
 }
 
-export { Offer };
+export const Offer = memo(OfferPage);

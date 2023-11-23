@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { MAX_REVIEW_LENGHT } from '../../const';
 import { Review } from '../../types-ts/review';
-import { ReviewItem } from './review-item';
+import { ReviewItem } from '../review-item/review-item';
 
 type ReviewListProps = {
   reviews: Review[];

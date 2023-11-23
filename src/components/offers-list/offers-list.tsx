@@ -9,7 +9,7 @@ import { favoriteOffersExtraAction } from '../../store/slice/favorite';
 import { offersAction } from '../../store/slice/offers';
 import { Card } from '../card/card';
 import { Map } from '../map/map';
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Sort, CreateSortingOffers } from '../sort/sort';
 import { OffersListEmpty } from './offers-list-empty';
 import { useNavigate } from 'react-router-dom';
@@ -33,23 +33,24 @@ function OffersListComponent({ city }: OffersListProps): JSX.Element {
   );
   const listEmpty = offersByCity.length === 0;
 
-  const handleFavoriteChange = (id: string) => {
+  const handleFavoriteChange = useCallback((id: string) => {
     dispatch(offersAction.setFavorite(id));
     const foundOffer = offersState.find((offer) => offer.id === id);
-    if (foundOffer) {
+    if (foundOffer && isAuth) {
       const favoriteStatus = foundOffer.isFavorite ? 0 : 1;
       dispatch(
         favoriteOffersExtraAction.setFavoriteOffer({
           offerId: id,
           status: favoriteStatus,
         })
-      );
-      dispatch(favoriteOffersExtraAction.fetchFavoriteOffers());
+      ).then(() => {
+        dispatch(favoriteOffersExtraAction.fetchFavoriteOffers());
+      });
     }
-    if (!isAuth) {
-      navigate(AppRoute.Login);
+    if(!isAuth) {
+      return navigate(AppRoute.Login);
     }
-  };
+  }, [dispatch, offersState, isAuth, navigate]);
 
   const handleMouseEnter = (id: string) => setActiveOfferCard(id);
 
@@ -80,7 +81,7 @@ function OffersListComponent({ city }: OffersListProps): JSX.Element {
                 screenName="cities"
                 offer={offer}
                 isAuth={isAuth}
-                handleFavoriteChange={handleFavoriteChange}
+                onFavoriteChange={handleFavoriteChange}
                 onMouseEnter={() => handleMouseEnter(offer.id)}
                 onMouseLeave={() => handleMouseLeave()}
               />

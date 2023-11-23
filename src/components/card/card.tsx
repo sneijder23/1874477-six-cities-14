@@ -4,19 +4,25 @@ import { capitalizeFirstLetter } from '../../utils/utils';
 import { AppRoute } from '../../const';
 import classNames from 'classnames';
 import { HTMLAttributes, memo } from 'react';
-import { FavoriteButton } from '../favorite/favorite-button';
+import { FavoriteButton } from '../favorite-button/favorite-button';
 
 type CardProps = {
   offer: ServerOffer;
-  handleFavoriteChange: (id: string, isFavorite: boolean) => void;
+  onFavoriteChange: (id: string, isFavorite: boolean) => void;
   screenName: string;
   isAuth: boolean;
 } & Pick<HTMLAttributes<HTMLElement>, 'onMouseEnter' | 'onMouseLeave'>;
 
-function CardComponent({ offer, screenName, handleFavoriteChange, isAuth, ...props}: CardProps): JSX.Element {
+function CardComponent({
+  offer,
+  screenName,
+  onFavoriteChange,
+  isAuth,
+  ...props
+}: CardProps): JSX.Element {
   const handleFavoriteClick = () => {
     const newIsFavorite = !offer.isFavorite;
-    handleFavoriteChange(offer.id, newIsFavorite);
+    onFavoriteChange(offer.id, newIsFavorite);
   };
 
   const cardClass = `${screenName}__card`;
@@ -53,7 +59,11 @@ function CardComponent({ offer, screenName, handleFavoriteChange, isAuth, ...pro
             <b className="place-card__price-value">&euro;{offer.price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <FavoriteButton handleFavoriteClick={handleFavoriteClick} isAuth={isAuth} isActive={isActive}/>
+          <FavoriteButton
+            handleFavoriteClick={handleFavoriteClick}
+            isAuth={isAuth}
+            isActive={isActive}
+          />
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">

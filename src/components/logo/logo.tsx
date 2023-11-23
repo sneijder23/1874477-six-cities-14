@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/store';
 import { memo } from 'react';
+import { getSelectedCity } from '../../store/slice/offers/selectors';
 
 function LogoComponent(): JSX.Element {
-  const cityState = useAppSelector((state) => state.offers.city);
+  const cityState = useAppSelector(getSelectedCity);
 
   return (
     <div className="header__left">

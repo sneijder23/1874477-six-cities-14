@@ -1,15 +1,18 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { ServerOffer } from '../../types-ts/offer';
-import { fetchFavoriteOffers, setFavoriteOffer } from '../thunk/favorite';
+import { ServerOffer } from '../../../types-ts/offer';
+import { fetchFavoriteOffers } from '../../thunk/favorite';
+import { NameSpace } from '../../../const';
 
 interface FavoriteOffersState {
   offers: ServerOffer[];
   isOffersLoading: boolean;
+  redirectToErrorPage: boolean;
 }
 
 const initialState: FavoriteOffersState = {
   offers: [],
   isOffersLoading: false,
+  redirectToErrorPage: false,
 };
 
 const processSuccess = (state: FavoriteOffersState, action: PayloadAction<ServerOffer[]>) => {
@@ -20,14 +23,16 @@ const processSuccess = (state: FavoriteOffersState, action: PayloadAction<Server
 
 const processFailed = (state: FavoriteOffersState) => {
   state.isOffersLoading = false;
+  state.redirectToErrorPage = true;
 };
 
 const processPending = (state: FavoriteOffersState) => {
   state.isOffersLoading = true;
+  state.redirectToErrorPage = false;
 };
 
 export const favoriteOffersSlice = createSlice({
-  name: 'favoriteOffers',
+  name: NameSpace.Favorite,
   initialState,
   reducers: {
   },
@@ -38,5 +43,4 @@ export const favoriteOffersSlice = createSlice({
   }
 });
 
-export const favoriteOffersExtraAction = { fetchFavoriteOffers, setFavoriteOffer };
-export const favoriteOffersAction = favoriteOffersSlice.actions;
+export const favoriteAction = { fetchFavoriteOffers };

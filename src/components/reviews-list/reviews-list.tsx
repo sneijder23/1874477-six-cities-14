@@ -7,7 +7,7 @@ type ReviewListProps = {
   reviews: Review[];
 };
 
-function ReviewListComponent({ reviews }: ReviewListProps): JSX.Element {
+function ReviewsListComponent({ reviews }: ReviewListProps): JSX.Element {
   return (
     <ul className="reviews__list">
       {reviews
@@ -20,4 +20,4 @@ function ReviewListComponent({ reviews }: ReviewListProps): JSX.Element {
   );
 }
 
-export const ReviewList = memo(ReviewListComponent);
+export const ReviewsList = memo(ReviewsListComponent);

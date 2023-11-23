@@ -1,18 +1,20 @@
 import {
   AppRoute,
-  AuthorizationStatus,
   CITY_MAP,
   SortTypes,
 } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
-import { favoriteOffersExtraAction } from '../../store/slice/favorite';
-import { offersAction } from '../../store/slice/offers';
+import { offersAction } from '../../store/slice/offers/offers';
 import { Card } from '../card/card';
 import { Map } from '../map/map';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Sort, CreateSortingOffers } from '../sort/sort';
 import { OffersListEmpty } from './offers-list-empty';
 import { useNavigate } from 'react-router-dom';
+import { getOffers } from '../../store/slice/offers/selectors';
+import { getAuthorizationStatus } from '../../store/slice/user/selectors';
+import { setFavoriteOffer } from '../../store/thunk/favorite';
+import { favoriteAction } from '../../store/slice/favorite/favorite';
 
 type OffersListProps = {
   city: string;
@@ -23,34 +25,38 @@ function OffersListComponent({ city }: OffersListProps): JSX.Element {
   const navigate = useNavigate();
   const [activeOfferCard, setActiveOfferCard] = useState<string | null>(null);
   const [activeSort, setActiveSort] = useState<string>(SortTypes.Popular);
-  const offersState = useAppSelector((state) => state.offers.offers);
+  const offersState = useAppSelector(getOffers);
   const offersByCity = offersState
     .slice()
     .filter((item) => item.city.name === city);
-  const sortedOffersByCity = useMemo(() => CreateSortingOffers(activeSort, offersByCity), [activeSort, offersByCity]);
-  const isAuth = useAppSelector(
-    (state) => state.user.authStatus === AuthorizationStatus.Auth
+  const sortedOffersByCity = useMemo(
+    () => CreateSortingOffers(activeSort, offersByCity),
+    [activeSort, offersByCity]
   );
+  const isAuth = useAppSelector(getAuthorizationStatus);
   const listEmpty = offersByCity.length === 0;
 
-  const handleFavoriteChange = useCallback((id: string) => {
-    dispatch(offersAction.setFavorite(id));
-    const foundOffer = offersState.find((offer) => offer.id === id);
-    if (foundOffer && isAuth) {
-      const favoriteStatus = foundOffer.isFavorite ? 0 : 1;
-      dispatch(
-        favoriteOffersExtraAction.setFavoriteOffer({
-          offerId: id,
-          status: favoriteStatus,
-        })
-      ).then(() => {
-        dispatch(favoriteOffersExtraAction.fetchFavoriteOffers());
-      });
-    }
-    if(!isAuth) {
-      return navigate(AppRoute.Login);
-    }
-  }, [dispatch, offersState, isAuth, navigate]);
+  const handleFavoriteChange = useCallback(
+    (id: string) => {
+      dispatch(offersAction.setFavorite(id));
+      const foundOffer = offersState.find((offer) => offer.id === id);
+      if (foundOffer && isAuth) {
+        const favoriteStatus = foundOffer.isFavorite ? 0 : 1;
+        dispatch(
+          setFavoriteOffer({
+            offerId: id,
+            status: favoriteStatus,
+          })
+        ).then(() => {
+          dispatch(favoriteAction.fetchFavoriteOffers());
+        });
+      }
+      if (!isAuth) {
+        return navigate(AppRoute.Login);
+      }
+    },
+    [dispatch, offersState, isAuth, navigate]
+  );
 
   const handleMouseEnter = (id: string) => setActiveOfferCard(id);
 

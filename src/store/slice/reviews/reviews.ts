@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Review } from '../../types-ts/review';
-import { fetchReviews, postReview } from '../thunk/review';
+import { Review } from '../../../types-ts/review';
+import { fetchReviews, postReview } from '../../thunk/review';
+import { NameSpace } from '../../../const';
 
 interface ReviewsState {
   reviews: Review[];
@@ -25,7 +26,7 @@ const processPostFailed = (state: ReviewsState) => {
 };
 
 export const reviewsSlice = createSlice({
-  name: 'reviews',
+  name: NameSpace.Review,
   initialState,
   reducers: {},
   extraReducers: (builder) => {

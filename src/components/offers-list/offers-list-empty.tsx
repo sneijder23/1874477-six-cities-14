@@ -1,4 +1,6 @@
-function OffersListEmpty(): JSX.Element {
+import { memo } from 'react';
+
+function OffersListEmptyComponent(): JSX.Element {
   return (
     <section className="cities__no-places">
       <div className="cities__status-wrapper tabs__content">
@@ -11,5 +13,5 @@ function OffersListEmpty(): JSX.Element {
   );
 }
 
-export { OffersListEmpty };
+export const OffersListEmpty = memo(OffersListEmptyComponent);
 

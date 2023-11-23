@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { DEFAULT_CITY } from '../../const';
-import { ServerOffer } from '../../types-ts/offer';
-import { fetchAllOffers, fetchOneOffer } from '../thunk/offers';
+import { DEFAULT_CITY, NameSpace } from '../../../const';
+import { ServerOffer } from '../../../types-ts/offer';
+import { fetchAllOffers, fetchOneOffer } from '../../thunk/offers';
 
 interface OffersState {
   offers: ServerOffer[];
@@ -42,7 +42,7 @@ const processPending = (state: OffersState) => {
 };
 
 export const offersSlice = createSlice({
-  name: 'offers',
+  name: NameSpace.Offer,
   initialState,
   reducers: {
     setCitySelect(state, action: PayloadAction<string>) {
@@ -78,5 +78,6 @@ export const offersSlice = createSlice({
   },
 });
 
-export const offersExtraAction = { fetchAllOffers, fetchOneOffer };
+export const offersFetch = { fetchAllOffers, fetchOneOffer };
 export const offersAction = offersSlice.actions;
+

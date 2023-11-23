@@ -4,10 +4,11 @@ import { useDocumentTitle } from '../hooks/document-title';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { login } from '../store/thunk/auth';
-import { AuthorizationStatus } from '../const';
-import { offersAction } from '../store/slice/offers';
+import { offersAction } from '../store/slice/offers/offers';
 import { getRandomCity } from '../utils/utils';
 import { toast } from 'react-toastify';
+import { getAuthorizationStatus } from '../store/slice/user/selectors';
+import { getSelectedCity } from '../store/slice/offers/selectors';
 
 function LoginPage(): JSX.Element {
   useDocumentTitle('Login');
@@ -15,8 +16,8 @@ function LoginPage(): JSX.Element {
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const loginRegExp = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
   const passwordRegExp = /^(?=.*[A-Za-z])(?=.*\d).{2,}$/;
-  const isAuth = useAppSelector((state) => state.user.authStatus);
-  const citySelect = useAppSelector((state) => state.offers.city);
+  const isAuth = useAppSelector(getAuthorizationStatus);
+  const selectedCity = useAppSelector(getSelectedCity);
   const randomCity = getRandomCity();
 
   const dispatch = useAppDispatch();
@@ -31,7 +32,9 @@ function LoginPage(): JSX.Element {
       }
 
       if (!passwordRegExp.test(passwordRef.current?.value)) {
-        return toast.warn('Пароль должен содержать минимум одну букву и одну цифру!');
+        return toast.warn(
+          'Пароль должен содержать минимум одну букву и одну цифру!'
+        );
       }
 
       dispatch(
@@ -39,7 +42,15 @@ function LoginPage(): JSX.Element {
           email: loginRef.current.value,
           password: passwordRef.current.value,
         })
-      );
+      )
+        .unwrap()
+        .then(() => {
+          toast.success('Succes login');
+        })
+        .catch((error: Error) => {
+          toast.error(error.message);
+        });
+
       navigate(-1);
     }
   };
@@ -50,8 +61,8 @@ function LoginPage(): JSX.Element {
     navigate(`/${randomCity.name}`);
   };
 
-  if (isAuth === AuthorizationStatus.Auth) {
-    return <Navigate to={`/${citySelect}`} />;
+  if (isAuth) {
+    return <Navigate to={`/${selectedCity}`} />;
   }
 
   return (

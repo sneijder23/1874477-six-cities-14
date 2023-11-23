@@ -1,20 +1,20 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { AuthorizationStatus } from '../../const';
-import { ServerUser } from '../../types-ts/user';
-import { checkAuth, login, logout } from '../thunk/auth';
+import { AuthorizationStatus, NameSpace } from '../../../const';
+import { ServerUser } from '../../../types-ts/user';
+import { checkAuth, login, logout } from '../../thunk/auth';
 
 interface UserSlice {
-  info: ServerUser | null;
+  userData: ServerUser | null;
   authStatus: AuthorizationStatus;
 }
 
 const initialState: UserSlice = {
-  info: null,
+  userData: null,
   authStatus: AuthorizationStatus.Unknown,
 };
 
 function proccesSuccess(state: UserSlice, action: PayloadAction<ServerUser>) {
-  state.info = action.payload;
+  state.userData = action.payload;
   state.authStatus = AuthorizationStatus.Auth;
 }
 
@@ -23,7 +23,7 @@ function proccesFailed(state: UserSlice) {
 }
 
 export const userSlice = createSlice({
-  name: 'user',
+  name: NameSpace.User,
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -32,10 +32,10 @@ export const userSlice = createSlice({
     builder.addCase(login.fulfilled, proccesSuccess);
     builder.addCase(login.rejected, proccesFailed);
     builder.addCase(logout.fulfilled, (state) => {
-      state.info = null;
+      state.userData = null;
       state.authStatus = AuthorizationStatus.NoAuth;
     });
   },
 });
 
-export const userAction = { checkAuth, login, logout };
+export const userFetch = { checkAuth, login, logout };

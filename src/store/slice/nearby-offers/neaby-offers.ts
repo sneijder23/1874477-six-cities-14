@@ -1,15 +1,18 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { ServerOffer } from '../../types-ts/offer';
-import { fetchNearByOffers } from '../thunk/offers';
+import { ServerOffer } from '../../../types-ts/offer';
+import { fetchNearByOffers } from '../../thunk/offers';
+import { NameSpace } from '../../../const';
 
 interface NearbyOffersState {
   offers: ServerOffer[];
   isOffersLoading: boolean;
+  redirectToErrorPage: boolean;
 }
 
 const initialState: NearbyOffersState = {
   offers: [],
   isOffersLoading: false,
+  redirectToErrorPage: false,
 };
 
 const processSuccess = (state: NearbyOffersState, action: PayloadAction<ServerOffer[]>) => {
@@ -20,14 +23,16 @@ const processSuccess = (state: NearbyOffersState, action: PayloadAction<ServerOf
 
 const processFailed = (state: NearbyOffersState) => {
   state.isOffersLoading = false;
+  state.redirectToErrorPage = true;
 };
 
 const processPending = (state: NearbyOffersState) => {
   state.isOffersLoading = true;
+  state.redirectToErrorPage = false;
 };
 
 export const nearbyOffersSlice = createSlice({
-  name: 'nearbyOffers',
+  name: NameSpace.NearbyOffer,
   initialState,
   reducers: {
     setFavorite(state, action: PayloadAction<string>) {
@@ -47,5 +52,5 @@ export const nearbyOffersSlice = createSlice({
   }
 });
 
-export const nearbyOffersExtraAction = { fetchNearByOffers };
+export const nearbyOffersFetch = { fetchNearByOffers };
 export const nearbyOffersAction = nearbyOffersSlice.actions;

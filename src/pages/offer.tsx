@@ -3,40 +3,58 @@ import { useDocumentTitle } from '../hooks/document-title';
 import { useNavigate, useParams } from 'react-router-dom';
 import { capitalizeFirstLetter } from '../utils/utils';
 import { ReviewForm } from '../components/review-form/review-form';
-import { ReviewList } from '../components/review-list/review-list';
+import { ReviewsList } from '../components/reviews-list/reviews-list';
 import { Map } from '../components/map/map';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
 import { Card } from '../components/card/card';
 import { memo, useCallback, useEffect } from 'react';
-import { offersAction, offersExtraAction } from '../store/slice/offers';
-import { nearbyOffersAction, nearbyOffersExtraAction } from '../store/slice/neaby-offers';
+import { offersAction, offersFetch } from '../store/slice/offers/offers';
+import {
+  nearbyOffersAction,
+  nearbyOffersFetch,
+} from '../store/slice/nearby-offers/neaby-offers';
 import { LoadingScreen } from './loading-screen';
-import { AppRoute, AuthorizationStatus } from '../const';
-import { favoriteOffersExtraAction } from '../store/slice/favorite';
+import { AppRoute, MAX_PICTURE_OFFER } from '../const';
+import { favoriteAction } from '../store/slice/favorite/favorite';
 import { FavoriteButton } from '../components/favorite-button/favorite-button';
-import { reviewsExtraAction } from '../store/slice/reviews';
+import { reviewsExtraAction } from '../store/slice/reviews/reviews';
+import { getReviews } from '../store/slice/reviews/selectors';
+import {
+  getErrorStatus,
+  getOffer,
+  getOffersLoadingStatus,
+} from '../store/slice/offers/selectors';
+import { getNearbyOffers } from '../store/slice/nearby-offers/selectors';
+import { getAuthorizationStatus } from '../store/slice/user/selectors';
+import { setFavoriteOffer } from '../store/thunk/favorite';
+import { toast } from 'react-toastify';
+
 
 function OfferPage(): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-  const reviewsState = useAppSelector((state) => state.reviews.reviews);
-  const redirectToErrorPage = useAppSelector((state) => state.offers.redirectToErrorPage);
-  const offerState = useAppSelector((state) => state.offers.offer);
-  const nerbyOffersState = useAppSelector((state) => state.nearbyOffers.offers);
-  const isOffersLoading = useAppSelector((state) => state.offers.isOffersLoading);
-  const isAuth = useAppSelector((state) => state.user.authStatus === AuthorizationStatus.Auth);
+  const reviewsState = useAppSelector(getReviews);
+  const redirectToErrorPage = useAppSelector(getErrorStatus);
+  const offerState = useAppSelector(getOffer);
+  const nerbyOffersState = useAppSelector(getNearbyOffers);
+  const isOffersLoading = useAppSelector(getOffersLoadingStatus);
+  const isAuth = useAppSelector(getAuthorizationStatus);
 
   const handleFavoriteClick = useCallback(() => {
     if (offerState) {
       const updatedFavoriteStatus = !offerState.isFavorite ? 1 : 0;
-      dispatch(favoriteOffersExtraAction.setFavoriteOffer({
-        offerId: offerState.id,
-        status: updatedFavoriteStatus,
-      })
-      )
+      dispatch(
+        setFavoriteOffer({
+          offerId: offerState.id,
+          status: updatedFavoriteStatus,
+        })
+      ).unwrap()
         .then(() => dispatch(offersAction.setOneOfferFavorite(offerState)))
-        .then(() => dispatch(favoriteOffersExtraAction.fetchFavoriteOffers()));
+        .then(() => dispatch(favoriteAction.fetchFavoriteOffers()))
+        .catch((error: Error) => {
+          toast.error(error.message);
+        });
     }
 
     if (!isAuth) {
@@ -44,24 +62,24 @@ function OfferPage(): JSX.Element {
     }
   }, [dispatch, isAuth, navigate, offerState]);
 
-  const handleFavoriteChange = useCallback((offerId: string) => {
-    dispatch(nearbyOffersAction.setFavorite(offerId));
-    const foundOffer = nerbyOffersState.find((offer) => offer.id === offerId);
-    if (foundOffer) {
-      const favoriteStatus = foundOffer.isFavorite ? 0 : 1;
-      dispatch(
-        favoriteOffersExtraAction.setFavoriteOffer({
-          offerId: offerId,
-          status: favoriteStatus,
-        })
-      )
-        .then(() => dispatch(favoriteOffersExtraAction.fetchFavoriteOffers()));
-    }
-    if (!isAuth) {
-      navigate(AppRoute.Login);
-    }
-  },
-  [dispatch, isAuth, navigate, nerbyOffersState]
+  const handleFavoriteChange = useCallback(
+    (offerId: string) => {
+      dispatch(nearbyOffersAction.setFavorite(offerId));
+      const foundOffer = nerbyOffersState.find((offer) => offer.id === offerId);
+      if (foundOffer) {
+        const favoriteStatus = foundOffer.isFavorite ? 0 : 1;
+        dispatch(
+          setFavoriteOffer({
+            offerId: offerId,
+            status: favoriteStatus,
+          })
+        ).then(() => dispatch(favoriteAction.fetchFavoriteOffers()));
+      }
+      if (!isAuth) {
+        navigate(AppRoute.Login);
+      }
+    },
+    [dispatch, isAuth, navigate, nerbyOffersState]
   );
 
   useDocumentTitle('Offer');
@@ -75,12 +93,11 @@ function OfferPage(): JSX.Element {
 
   useEffect(() => {
     if (id) {
-      dispatch(offersExtraAction.fetchOneOffer(id));
-      dispatch(nearbyOffersExtraAction.fetchNearByOffers(id));
+      dispatch(offersFetch.fetchOneOffer(id));
+      dispatch(nearbyOffersFetch.fetchNearByOffers(id));
       dispatch(reviewsExtraAction.fetchReviews(id));
     }
   }, [dispatch, id]);
-
 
   if (!offerState || !nerbyOffersState || isOffersLoading) {
     return <LoadingScreen />;
@@ -93,16 +110,15 @@ function OfferPage(): JSX.Element {
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
-              <div className="offer__image-wrapper">
-                {offerState.images.map((image) => (
+              {offerState.images.slice(0, MAX_PICTURE_OFFER).map((image) => (
+                <div key={image} className="offer__image-wrapper">
                   <img
-                    key={image}
                     className="offer__image"
                     src={image}
                     alt={offerState.title}
                   />
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
           <div className="offer__container container">
@@ -124,7 +140,10 @@ function OfferPage(): JSX.Element {
               </div>
               <div className="offer__rating rating">
                 <div className="offer__stars rating__stars">
-                  <span style={{ width: `${Math.round(offerState.rating) * 20}%` }}></span>
+                  <span
+                    style={{ width: `${Math.round(offerState.rating) * 20}%` }}
+                  >
+                  </span>
                   <span className="visually-hidden">Rating</span>
                 </div>
                 <span className="offer__rating-value rating__value">
@@ -184,7 +203,7 @@ function OfferPage(): JSX.Element {
                   Reviews &middot;{' '}
                   <span className="reviews__amount">{reviewsState.length}</span>
                 </h2>
-                <ReviewList reviews={reviewsState} />
+                <ReviewsList reviews={reviewsState} />
                 {isAuth && <ReviewForm id={offerState.id} />}
               </section>
             </div>

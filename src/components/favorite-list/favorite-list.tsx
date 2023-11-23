@@ -3,23 +3,30 @@ import { City } from '../../types-ts/city';
 import { ServerOffer } from '../../types-ts/offer';
 import { Card } from '../card/card';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
-import { favoriteOffersExtraAction } from '../../store/slice/favorite';
+import { favoriteAction } from '../../store/slice/favorite/favorite';
 import { memo } from 'react';
-import { AuthorizationStatus } from '../../const';
+import { getAuthorizationStatus } from '../../store/slice/user/selectors';
+import { setFavoriteOffer } from '../../store/thunk/favorite';
 
 type FavoriteListProps = {
   city: City;
   offers: ServerOffer[];
 }[];
 
-function FavoriteListComponent({ favoriteList }: { favoriteList: FavoriteListProps }): JSX.Element {
+function FavoriteListComponent({
+  favoriteList,
+}: {
+  favoriteList: FavoriteListProps;
+}): JSX.Element {
   const dispatch = useAppDispatch();
-  const isAuth = useAppSelector((state) => state.user.authStatus === AuthorizationStatus.Auth);
+  const isAuth = useAppSelector(getAuthorizationStatus);
+
 
   const handleFavoriteChange = (id: string) => {
-    if(isAuth) {
-      dispatch(favoriteOffersExtraAction.setFavoriteOffer({offerId: id, status: 0}))
-        .then(() => dispatch(favoriteOffersExtraAction.fetchFavoriteOffers()));
+    if (isAuth) {
+      dispatch(
+        setFavoriteOffer({ offerId: id, status: 0 })
+      ).then(() => dispatch(favoriteAction.fetchFavoriteOffers()));
     }
   };
 

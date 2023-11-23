@@ -10,6 +10,8 @@ export const MIN_TEXTAREA_LENGTH = 50;
 
 export const MAX_TEXTAREA_LENGTH = 300;
 
+export const MAX_PICTURE_OFFER = 6;
+
 export const APP_NAME: string = '6 cities';
 
 export const URL_MARKER_DEFAULT = 'img/pin.svg';
@@ -43,6 +45,14 @@ export const enum AuthorizationStatus {
   Auth = 'AUTH',
   NoAuth = 'NO_AUTH',
   Unknown = 'UNKNOWN',
+}
+
+export const enum NameSpace {
+  Offer = 'OFFER',
+  NearbyOffer = 'NEARBY_OFFER',
+  Review = 'RERVIEW',
+  User = 'USER',
+  Favorite = 'FAVORITE',
 }
 
 export const CITY_MAP: Record<string, City> = {

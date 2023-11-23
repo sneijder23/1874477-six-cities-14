@@ -7,10 +7,11 @@ import { City } from '../types-ts/city';
 import { ServerOffer } from '../types-ts/offer';
 import { memo, useMemo } from 'react';
 import { Footer } from '../components/footer/footer';
+import { getFavoriteOffers } from '../store/slice/favorite/selectors';
 
 function FavoritiesPage(): JSX.Element {
   useDocumentTitle('Favorites');
-  const favoriteState = useAppSelector((state) => state.favoriteOffers.offers);
+  const favoriteState = useAppSelector(getFavoriteOffers);
 
   const favoritesList: { city: City; offers: ServerOffer[] }[] = useMemo(() =>
     favoriteState.reduce<{ city: City; offers: ServerOffer[] }[]>((acc, cur) => {

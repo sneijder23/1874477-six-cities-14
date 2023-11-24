@@ -8,27 +8,15 @@ import { FavoriteButton } from '../favorite-button/favorite-button';
 
 type CardProps = {
   offer: ServerOffer;
-  onFavoriteChange: (id: string, isFavorite: boolean) => void;
   screenName: string;
-  isAuth: boolean;
+  offers?: boolean;
+  nearbyOffers?: boolean;
 } & Pick<HTMLAttributes<HTMLElement>, 'onMouseEnter' | 'onMouseLeave'>;
 
-function CardComponent({
-  offer,
-  screenName,
-  onFavoriteChange,
-  isAuth,
-  ...props
-}: CardProps): JSX.Element {
-  const handleFavoriteClick = () => {
-    const newIsFavorite = !offer.isFavorite;
-    onFavoriteChange(offer.id, newIsFavorite);
-  };
-
+function CardComponent({ offer, screenName, offers, nearbyOffers, ...props}: CardProps): JSX.Element {
   const cardClass = `${screenName}__card`;
   const cardImageWrapper = `${screenName}__image-wrapper`;
   const isFavoriteScreen = screenName === 'favorites';
-  const isActive = offer.isFavorite;
 
   return (
     <article className={`${cardClass} place-card`} {...props}>
@@ -60,9 +48,9 @@ function CardComponent({
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
           <FavoriteButton
-            handleFavoriteClick={handleFavoriteClick}
-            isAuth={isAuth}
-            isActive={isActive}
+            offerState={offer}
+            offers={offers ?? undefined}
+            nearbyOffers={nearbyOffers ?? undefined}
           />
         </div>
         <div className="place-card__rating rating">

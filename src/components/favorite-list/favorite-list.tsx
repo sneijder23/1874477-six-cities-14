@@ -2,33 +2,11 @@ import { Link } from 'react-router-dom';
 import { City } from '../../types-ts/city';
 import { ServerOffer } from '../../types-ts/offer';
 import { Card } from '../card/card';
-import { useAppDispatch, useAppSelector } from '../../hooks/store';
-import { favoriteAction } from '../../store/slice/favorite/favorite';
 import { memo } from 'react';
-import { getAuthorizationStatus } from '../../store/slice/user/selectors';
-import { setFavoriteOffer } from '../../store/thunk/favorite';
 
-type FavoriteListProps = {
-  city: City;
-  offers: ServerOffer[];
-}[];
+type FavoriteListProps = {city: City; offers: ServerOffer[] }[];
 
-function FavoriteListComponent({
-  favoriteList,
-}: {
-  favoriteList: FavoriteListProps;
-}): JSX.Element {
-  const dispatch = useAppDispatch();
-  const isAuth = useAppSelector(getAuthorizationStatus);
-
-
-  const handleFavoriteChange = (id: string) => {
-    if (isAuth) {
-      dispatch(
-        setFavoriteOffer({ offerId: id, status: 0 })
-      ).then(() => dispatch(favoriteAction.fetchFavoriteOffers()));
-    }
-  };
+function FavoriteListComponent({ favoriteList }: {favoriteList: FavoriteListProps}): JSX.Element {
 
   return (
     <ul className="favorites__list">
@@ -47,8 +25,6 @@ function FavoriteListComponent({
                 key={offer.id}
                 screenName="favorites"
                 offer={offer}
-                isAuth
-                onFavoriteChange={handleFavoriteChange}
               />
             ))}
           </div>

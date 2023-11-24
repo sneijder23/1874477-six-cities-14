@@ -5,21 +5,15 @@ import { Offer } from '../../pages/offer';
 import { Favorities } from '../../pages/favorities';
 import { Error } from '../../pages/error';
 import { PrivateRoute } from '../private-route/private-route';
-import { useAppDispatch, useAppSelector } from '../../hooks/store';
-import { useEffect, useMemo } from 'react';
+import { useAppSelector } from '../../hooks/store';
+import { useMemo } from 'react';
 import { CityRoutes } from '../city-routes/city-routes';
 import { getAuthorizationCheckedStatus } from '../../store/slice/user/selectors';
-import { userFetch } from '../../store/slice/user/user';
 import { PublicRoute } from '../public-route/public-route';
 
 function App(): JSX.Element {
-  const dispatch = useAppDispatch();
   const authorizationStatus = useAppSelector(getAuthorizationCheckedStatus);
   const cityRoutes = useMemo(() => CityRoutes(), []);
-
-  useEffect(() => {
-    dispatch(userFetch.checkAuth());
-  }, [authorizationStatus, dispatch]);
 
   return (
     <BrowserRouter>

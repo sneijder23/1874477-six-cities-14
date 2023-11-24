@@ -1,15 +1,16 @@
 import { Link } from 'react-router-dom';
 import { MouseEvent, memo, useCallback, useEffect } from 'react';
 import { AppRoute } from '../../const';
-import { useAppDispatch } from '../../hooks/store';
+import { useAppDispatch, useAppSelector } from '../../hooks/store';
 import { logout } from '../../store/thunk/auth';
-import { ServerUser } from '../../types-ts/user';
 import { favoriteAction } from '../../store/slice/favorite/favorite';
+import { getUser } from '../../store/slice/user/selectors';
+import { getFavoriteOffersCount } from '../../store/slice/favorite/selectors';
 
-function UserLoggedComponent({ user,favoritesCount }: {user: ServerUser; favoritesCount: number}) {
+function UserLoggedComponent() {
   const dispatch = useAppDispatch();
-  const userData = user;
-  const userFavorites = favoritesCount;
+  const userData = useAppSelector(getUser);
+  const userFavoritesCount = useAppSelector(getFavoriteOffersCount);
   const handleButtonClick = useCallback(
     (evt: MouseEvent<HTMLAnchorElement>) => {
       evt.preventDefault();
@@ -41,7 +42,7 @@ function UserLoggedComponent({ user,favoritesCount }: {user: ServerUser; favorit
             </span>
           </Link>
           <span className="header__favorite-count">
-            <Link to={AppRoute.Favorites}>{userFavorites}</Link>
+            <Link to={AppRoute.Favorites}>{userFavoritesCount}</Link>
           </span>
         </li>
         <li className="header__nav-item">

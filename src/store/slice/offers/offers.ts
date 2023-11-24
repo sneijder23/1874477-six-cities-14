@@ -59,9 +59,9 @@ export const offersSlice = createSlice({
     setActivePoint(state, action: PayloadAction<string>) {
       state.activePoint = action.payload;
     },
-    setOneOfferFavorite: (state, action: PayloadAction<ServerOffer>) => {
+    setOneOfferFavorite: (state) => {
       if (state.offer) {
-        state.offer.isFavorite = !action.payload.isFavorite;
+        state.offer.isFavorite = !state.offer.isFavorite;
       }
     },
     resetRedirectToErrorPage: (state) => {
@@ -80,4 +80,3 @@ export const offersSlice = createSlice({
 
 export const offersFetch = { fetchAllOffers, fetchOneOffer };
 export const offersAction = offersSlice.actions;
-

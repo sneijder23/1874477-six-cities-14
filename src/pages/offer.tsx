@@ -7,15 +7,11 @@ import { ReviewsList } from '../components/reviews-list/reviews-list';
 import { Map } from '../components/map/map';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
 import { Card } from '../components/card/card';
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { offersAction, offersFetch } from '../store/slice/offers/offers';
-import {
-  nearbyOffersAction,
-  nearbyOffersFetch,
-} from '../store/slice/nearby-offers/neaby-offers';
+import { nearbyOffersFetch } from '../store/slice/nearby-offers/neaby-offers';
 import { LoadingScreen } from './loading-screen';
 import { AppRoute, MAX_PICTURE_OFFER } from '../const';
-import { favoriteAction } from '../store/slice/favorite/favorite';
 import { FavoriteButton } from '../components/favorite-button/favorite-button';
 import { reviewsExtraAction } from '../store/slice/reviews/reviews';
 import { getReviews } from '../store/slice/reviews/selectors';
@@ -26,9 +22,6 @@ import {
 } from '../store/slice/offers/selectors';
 import { getNearbyOffers } from '../store/slice/nearby-offers/selectors';
 import { getAuthorizationStatus } from '../store/slice/user/selectors';
-import { setFavoriteOffer } from '../store/thunk/favorite';
-import { toast } from 'react-toastify';
-
 
 function OfferPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -41,55 +34,7 @@ function OfferPage(): JSX.Element {
   const isOffersLoading = useAppSelector(getOffersLoadingStatus);
   const isAuth = useAppSelector(getAuthorizationStatus);
 
-  const handleFavoriteClick = useCallback(() => {
-    if (offerState) {
-      const updatedFavoriteStatus = !offerState.isFavorite ? 1 : 0;
-      dispatch(
-        setFavoriteOffer({
-          offerId: offerState.id,
-          status: updatedFavoriteStatus,
-        })
-      ).unwrap()
-        .then(() => dispatch(offersAction.setOneOfferFavorite(offerState)))
-        .then(() => dispatch(favoriteAction.fetchFavoriteOffers()))
-        .catch((error: Error) => {
-          toast.error(error.message);
-        });
-    }
-
-    if (!isAuth) {
-      navigate(AppRoute.Login);
-    }
-  }, [dispatch, isAuth, navigate, offerState]);
-
-  const handleFavoriteChange = useCallback(
-    (offerId: string) => {
-      dispatch(nearbyOffersAction.setFavorite(offerId));
-      const foundOffer = nerbyOffersState.find((offer) => offer.id === offerId);
-      if (foundOffer) {
-        const favoriteStatus = foundOffer.isFavorite ? 0 : 1;
-        dispatch(
-          setFavoriteOffer({
-            offerId: offerId,
-            status: favoriteStatus,
-          })
-        ).then(() => dispatch(favoriteAction.fetchFavoriteOffers()));
-      }
-      if (!isAuth) {
-        navigate(AppRoute.Login);
-      }
-    },
-    [dispatch, isAuth, navigate, nerbyOffersState]
-  );
-
   useDocumentTitle('Offer');
-
-  useEffect(() => {
-    if (redirectToErrorPage) {
-      dispatch(offersAction.resetRedirectToErrorPage());
-      navigate(AppRoute.Error);
-    }
-  }, [dispatch, id, navigate, redirectToErrorPage]);
 
   useEffect(() => {
     if (id) {
@@ -97,7 +42,11 @@ function OfferPage(): JSX.Element {
       dispatch(nearbyOffersFetch.fetchNearByOffers(id));
       dispatch(reviewsExtraAction.fetchReviews(id));
     }
-  }, [dispatch, id]);
+    if (redirectToErrorPage) {
+      dispatch(offersAction.resetRedirectToErrorPage());
+      navigate(AppRoute.Error);
+    }
+  }, [dispatch, id, navigate, redirectToErrorPage]);
 
   if (!offerState || !nerbyOffersState || isOffersLoading) {
     return <LoadingScreen />;
@@ -133,9 +82,8 @@ function OfferPage(): JSX.Element {
                 <FavoriteButton
                   className="offer"
                   bigIcon
-                  isActive={offerState.isFavorite}
-                  isAuth={isAuth}
-                  handleFavoriteClick={handleFavoriteClick}
+                  offerState={offerState}
+                  offer
                 />
               </div>
               <div className="offer__rating rating">
@@ -227,8 +175,7 @@ function OfferPage(): JSX.Element {
                   key={offer.id}
                   screenName="near-places"
                   offer={offer}
-                  isAuth={isAuth}
-                  onFavoriteChange={handleFavoriteChange}
+                  nearbyOffers
                 />
               ))}
             </div>

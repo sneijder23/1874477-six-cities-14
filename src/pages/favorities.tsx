@@ -5,7 +5,7 @@ import { useDocumentTitle } from '../hooks/document-title';
 import { useAppSelector } from '../hooks/store';
 import { City } from '../types-ts/city';
 import { ServerOffer } from '../types-ts/offer';
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import { Footer } from '../components/footer/footer';
 import { getFavoriteOffers } from '../store/slice/favorite/selectors';
 
@@ -13,24 +13,20 @@ function FavoritiesPage(): JSX.Element {
   useDocumentTitle('Favorites');
   const favoriteState = useAppSelector(getFavoriteOffers);
 
-  const favoritesList: { city: City; offers: ServerOffer[] }[] = useMemo(() =>
-    favoriteState.reduce<{ city: City; offers: ServerOffer[] }[]>((acc, cur) => {
-      if (cur.isFavorite) {
-        const existingCity = acc.find(
-          (item) => item.city.name === cur.city.name
-        );
-        if (existingCity) {
-          existingCity.offers.push(cur);
-        } else {
-          acc.push({
-            city: cur.city,
-            offers: [cur],
-          });
-        }
+  const favoritesList: { city: City; offers: ServerOffer[] }[] = favoriteState.reduce<{ city: City; offers: ServerOffer[] }[]>((acc, cur) => {
+    if (cur.isFavorite) {
+      const existingCity = acc.find((item) => item.city.name === cur.city.name);
+      if (existingCity) {
+        existingCity.offers.push(cur);
+      } else {
+        acc.push({
+          city: cur.city,
+          offers: [cur],
+        });
       }
-      return acc;
-    },[]
-    ), [favoriteState]);
+    }
+    return acc;
+  }, []);
 
   const listEmpty = favoritesList.length === 0;
 

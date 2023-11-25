@@ -5,11 +5,10 @@ import { useDocumentTitle } from '../hooks/document-title';
 import { useAppSelector } from '../hooks/store';
 import { City } from '../types-ts/city';
 import { ServerOffer } from '../types-ts/offer';
-import { memo } from 'react';
 import { Footer } from '../components/footer/footer';
 import { getFavoriteOffers } from '../store/slice/favorite/selectors';
 
-function FavoritiesPage(): JSX.Element {
+function Favorities(): JSX.Element {
   useDocumentTitle('Favorites');
   const favoriteState = useAppSelector(getFavoriteOffers);
 
@@ -50,4 +49,4 @@ function FavoritiesPage(): JSX.Element {
   );
 }
 
-export const Favorities = memo(FavoritiesPage);
+export { Favorities };

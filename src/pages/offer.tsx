@@ -7,13 +7,11 @@ import { ReviewsList } from '../components/reviews-list/reviews-list';
 import { Map } from '../components/map/map';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
 import { Card } from '../components/card/card';
-import { memo, useEffect } from 'react';
-import { offersAction, offersFetch } from '../store/slice/offers/offers';
-import { nearbyOffersFetch } from '../store/slice/nearby-offers/nearby-offers';
+import { useEffect } from 'react';
+import { offersAction } from '../store/slice/offers/offers';
 import { LoadingScreen } from './loading-screen';
 import { AppRoute, MAX_PICTURE_OFFER } from '../const';
 import { FavoriteButton } from '../components/favorite-button/favorite-button';
-import { reviewsExtraAction } from '../store/slice/reviews/reviews';
 import { getReviews } from '../store/slice/reviews/selectors';
 import {
   getErrorStatus,
@@ -24,8 +22,10 @@ import { getNearbyOffers } from '../store/slice/nearby-offers/selectors';
 import { getAuthorizationStatus } from '../store/slice/user/selectors';
 import { OfferHost } from '../components/offer-host/offer-host';
 import { OfferRating } from '../components/offer-rating/offer-rating';
+import { fetchReviews } from '../store/thunk/review';
+import { fetchNearByOffers, fetchOneOffer } from '../store/thunk/offers';
 
-function OfferPage(): JSX.Element {
+function Offer(): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -40,9 +40,9 @@ function OfferPage(): JSX.Element {
 
   useEffect(() => {
     if (id) {
-      dispatch(offersFetch.fetchOneOffer(id));
-      dispatch(nearbyOffersFetch.fetchNearByOffers(id));
-      dispatch(reviewsExtraAction.fetchReviews(id));
+      dispatch(fetchOneOffer(id));
+      dispatch(fetchNearByOffers(id));
+      dispatch(fetchReviews(id));
     }
     if (redirectToErrorPage) {
       dispatch(offersAction.resetRedirectToErrorPage());
@@ -85,7 +85,6 @@ function OfferPage(): JSX.Element {
                   className="offer"
                   bigIcon
                   offerState={offerState}
-                  offer
                 />
               </div>
               <OfferRating
@@ -118,7 +117,7 @@ function OfferPage(): JSX.Element {
                   ))}
                 </ul>
               </div>
-              <OfferHost offerState={offerState} />
+              <OfferHost host={offerState.host} description={offerState.description} />
               <section className="offer__reviews reviews">
                 <h2 className="reviews__title">
                   Reviews &middot;{' '}
@@ -134,7 +133,6 @@ function OfferPage(): JSX.Element {
             className={'offer__map'}
             city={offerState.city}
             points={nerbyOffersState}
-            activePoint={id!}
           />
         </section>
         <div className="container">
@@ -148,7 +146,6 @@ function OfferPage(): JSX.Element {
                   key={offer.id}
                   screenName="near-places"
                   offer={offer}
-                  nearbyOffers
                 />
               ))}
             </div>
@@ -159,4 +156,4 @@ function OfferPage(): JSX.Element {
   );
 }
 
-export const Offer = memo(OfferPage);
+export { Offer };

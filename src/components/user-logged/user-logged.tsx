@@ -3,9 +3,9 @@ import { MouseEvent, memo, useCallback, useEffect } from 'react';
 import { AppRoute } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
 import { logout } from '../../store/thunk/user';
-import { favoriteAction } from '../../store/slice/favorite/favorite-offers';
 import { getUser } from '../../store/slice/user/selectors';
 import { getFavoriteOffersCount } from '../../store/slice/favorite/selectors';
+import { fetchFavoriteOffers } from '../../store/thunk/favorite-offers';
 
 function UserLoggedComponent() {
   const dispatch = useAppDispatch();
@@ -20,7 +20,7 @@ function UserLoggedComponent() {
   );
 
   useEffect(() => {
-    dispatch(favoriteAction.fetchFavoriteOffers());
+    dispatch(fetchFavoriteOffers());
   }, [dispatch, userData]);
 
   return (

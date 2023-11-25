@@ -10,11 +10,9 @@ import { OfferRating } from '../offer-rating/offer-rating';
 type CardProps = {
   offer: ServerOffer;
   screenName: string;
-  offers?: boolean;
-  nearbyOffers?: boolean;
 } & Pick<HTMLAttributes<HTMLElement>, 'onMouseEnter' | 'onMouseLeave'>;
 
-function CardComponent({ offer, screenName, offers, nearbyOffers, ...props}: CardProps): JSX.Element {
+function CardComponent({ offer, screenName, ...props}: CardProps): JSX.Element {
   const cardClass = `${screenName}__card`;
   const cardImageWrapper = `${screenName}__image-wrapper`;
   const isFavoriteScreen = screenName === 'favorites';
@@ -50,8 +48,6 @@ function CardComponent({ offer, screenName, offers, nearbyOffers, ...props}: Car
           </div>
           <FavoriteButton
             offerState={offer}
-            offers={offers ?? undefined}
-            nearbyOffers={nearbyOffers ?? undefined}
           />
         </div>
         <OfferRating className={'place-card'} rating={offer.rating}/>

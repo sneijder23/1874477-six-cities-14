@@ -2,6 +2,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { DEFAULT_CITY, NameSpace } from '../../../const';
 import { ServerOffer } from '../../../types-ts/offer';
 import { fetchAllOffers, fetchOneOffer } from '../../thunk/offers';
+import { setFavoriteOffer } from '../../thunk/favorite-offers';
 
 interface OffersState {
   offers: ServerOffer[];
@@ -48,21 +49,8 @@ export const offersSlice = createSlice({
     setCitySelect(state, action: PayloadAction<string>) {
       state.city = action.payload;
     },
-    setFavorite(state, action: PayloadAction<string>) {
-      const offerId = action.payload;
-      const foundOffer = state.offers.find((offer) => offer.id === offerId);
-
-      if (foundOffer) {
-        foundOffer.isFavorite = !foundOffer.isFavorite;
-      }
-    },
-    setActivePoint(state, action: PayloadAction<string>) {
+    setActivePoint(state, action: PayloadAction<string | undefined>) {
       state.activePoint = action.payload;
-    },
-    setOneOfferFavorite: (state) => {
-      if (state.offer) {
-        state.offer.isFavorite = !state.offer.isFavorite;
-      }
     },
     resetRedirectToErrorPage: (state) => {
       state.redirectToErrorPage = false;
@@ -75,8 +63,20 @@ export const offersSlice = createSlice({
     builder.addCase(fetchOneOffer.pending, processPending);
     builder.addCase(fetchOneOffer.fulfilled, processOneOfferSuccess);
     builder.addCase(fetchOneOffer.rejected, processFailed);
+    builder.addCase(setFavoriteOffer.fulfilled, (state, action: PayloadAction<ServerOffer>) => {
+      const foundOffer = state.offers.find((offer) => offer.id === action.payload.id);
+
+      if (foundOffer) {
+        foundOffer.isFavorite = action.payload.isFavorite;
+      }
+      if (state.offer) {
+        const foundOneOffer = state.offer.id === action.payload.id;
+        if (foundOneOffer) {
+          state.offer.isFavorite = action.payload.isFavorite;
+        }
+      }
+    });
   },
 });
 
-export const offersFetch = { fetchAllOffers, fetchOneOffer };
 export const offersAction = offersSlice.actions;

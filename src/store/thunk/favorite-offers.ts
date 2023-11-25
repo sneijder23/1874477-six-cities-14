@@ -11,10 +11,10 @@ export const fetchFavoriteOffers = createAsyncThunk<ServerOffer[], undefined, Th
   },
 );
 
-export const setFavoriteOffer = createAsyncThunk<ServerOffer[], FavoriteStatus, ThunkObjType>(
+export const setFavoriteOffer = createAsyncThunk<ServerOffer, FavoriteStatus, ThunkObjType>(
   `${NameSpace.Favorite}/setFavoriteOffer`,
   async ({offerId, status}, { extra: api }) => {
-    const response = await api.post<ServerOffer[]>(`${APIRoute.Favorites}/${offerId}/${status}`);
+    const response = await api.post<ServerOffer>(`${APIRoute.Favorites}/${offerId}/${status}`);
     return response.data;
   },
 );

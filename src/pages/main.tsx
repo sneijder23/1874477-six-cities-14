@@ -3,13 +3,14 @@ import { OffersList } from '../components/offers-list/offers-list';
 import { City } from '../types-ts/city';
 import { Tabs } from '../components/tabs/tabs';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
-import { offersAction, offersFetch } from '../store/slice/offers/offers';
+import { offersAction } from '../store/slice/offers/offers';
 import { CITY_MAP } from '../const';
-import { memo, useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { LoadingScreen } from './loading-screen';
 import { getOffersLoadingStatus, getSelectedCity } from '../store/slice/offers/selectors';
+import { fetchAllOffers } from '../store/thunk/offers';
 
-function MainPage(): JSX.Element {
+function Main(): JSX.Element {
   const dispatch = useAppDispatch();
   const stateCity = useAppSelector(getSelectedCity);
   const isOffersLoading = useAppSelector(getOffersLoadingStatus);
@@ -22,7 +23,7 @@ function MainPage(): JSX.Element {
   );
 
   useEffect(() => {
-    dispatch(offersFetch.fetchAllOffers());
+    dispatch(fetchAllOffers());
   }, [dispatch]);
 
   return (
@@ -48,4 +49,4 @@ function MainPage(): JSX.Element {
   );
 }
 
-export const Main = memo(MainPage);
+export { Main };

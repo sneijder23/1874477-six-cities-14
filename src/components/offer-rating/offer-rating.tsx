@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { ServerOffer } from '../../types-ts/offer';
 
 type OfferRatingProps = {
@@ -6,7 +7,7 @@ type OfferRatingProps = {
   showRatingValue?: boolean;
 };
 
-function OfferRating({ className, showRatingValue, rating }: OfferRatingProps): JSX.Element {
+function OfferRatingComponent({ className, showRatingValue, rating }: OfferRatingProps): JSX.Element {
   return (
     <div className={`${className}__rating rating`}>
       <div className={`${className}__stars rating__stars`}>
@@ -24,4 +25,4 @@ function OfferRating({ className, showRatingValue, rating }: OfferRatingProps): 
   );
 }
 
-export { OfferRating };
+export const OfferRating = memo(OfferRatingComponent);

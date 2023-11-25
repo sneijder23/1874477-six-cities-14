@@ -1,9 +1,10 @@
+import { memo } from 'react';
 import { Review } from '../../types-ts/review';
 
 type ReviewProps = {
   review: Review;
 };
-function ReviewItem({ review }: ReviewProps): JSX.Element {
+function ReviewItemComponent({ review }: ReviewProps): JSX.Element {
   const reviewDate = new Date(review.date);
   const formattedDate = reviewDate.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -43,4 +44,4 @@ function ReviewItem({ review }: ReviewProps): JSX.Element {
   );
 }
 
-export { ReviewItem };
+export const ReviewItem = memo(ReviewItemComponent);

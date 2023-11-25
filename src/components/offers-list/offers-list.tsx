@@ -1,18 +1,19 @@
 import { CITY_MAP, SortTypes } from '../../const';
-import { useAppSelector } from '../../hooks/store';
+import { useAppDispatch, useAppSelector } from '../../hooks/store';
 import { Card } from '../card/card';
 import { Map } from '../map/map';
-import { memo, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Sort, CreateSortingOffers } from '../sort/sort';
 import { OffersListEmpty } from '../offers-list-empy/offers-list-empty';
 import { getOffers } from '../../store/slice/offers/selectors';
+import { offersAction } from '../../store/slice/offers/offers';
 
 type OffersListProps = {
   city: string;
 };
 
-function OffersListComponent({ city }: OffersListProps): JSX.Element {
-  const [activeOfferCard, setActiveOfferCard] = useState<string | null>(null);
+function OffersList({ city }: OffersListProps): JSX.Element {
+  const dispatch = useAppDispatch();
   const [activeSort, setActiveSort] = useState<string>(SortTypes.Popular);
   const offersState = useAppSelector(getOffers);
   const offersByCity = offersState
@@ -23,9 +24,9 @@ function OffersListComponent({ city }: OffersListProps): JSX.Element {
     [activeSort, offersByCity]);
   const listEmpty = offersByCity.length === 0;
 
-  const handleMouseEnter = (id: string) => setActiveOfferCard(id);
+  const handleMouseEnter = (id: string) => dispatch(offersAction.setActivePoint(id));
 
-  const handleMouseLeave = () => setActiveOfferCard(null);
+  const handleMouseLeave = () => dispatch(offersAction.setActivePoint(undefined));
 
   useEffect(() => {
     setActiveSort(SortTypes.Popular);
@@ -51,7 +52,6 @@ function OffersListComponent({ city }: OffersListProps): JSX.Element {
                 key={offer.id}
                 screenName="cities"
                 offer={offer}
-                offers
                 onMouseEnter={() => handleMouseEnter(offer.id)}
                 onMouseLeave={() => handleMouseLeave()}
               />
@@ -65,11 +65,10 @@ function OffersListComponent({ city }: OffersListProps): JSX.Element {
           className={'cities__map'}
           city={CITY_MAP[city]}
           points={offersByCity}
-          activePoint={activeOfferCard}
         />
       </div>
     </div>
   );
 }
 
-export const OffersList = memo(OffersListComponent);
+export { OffersList };

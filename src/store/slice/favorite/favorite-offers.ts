@@ -42,5 +42,3 @@ export const favoriteOffersSlice = createSlice({
     builder.addCase(fetchFavoriteOffers.rejected, processFailed);
   }
 });
-
-export const favoriteAction = { fetchFavoriteOffers };

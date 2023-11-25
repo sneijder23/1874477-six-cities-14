@@ -2,6 +2,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { ServerOffer } from '../../../types-ts/offer';
 import { fetchNearByOffers } from '../../thunk/offers';
 import { NameSpace } from '../../../const';
+import { setFavoriteOffer } from '../../thunk/favorite-offers';
 
 interface NearbyOffersState {
   offers: ServerOffer[];
@@ -34,23 +35,16 @@ const processPending = (state: NearbyOffersState) => {
 export const nearbyOffersSlice = createSlice({
   name: NameSpace.NearbyOffer,
   initialState,
-  reducers: {
-    setFavorite(state, action: PayloadAction<string>) {
-      const offerId = action.payload;
-      const foundOffer = state.offers.find((offer) => offer.id === offerId);
-
-      if (foundOffer) {
-        foundOffer.isFavorite = !foundOffer.isFavorite;
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchNearByOffers.pending, processPending);
     builder.addCase(fetchNearByOffers.fulfilled, processSuccess);
     builder.addCase(fetchNearByOffers.rejected, processFailed);
-
+    builder.addCase(setFavoriteOffer.fulfilled, (state, action: PayloadAction<ServerOffer>) => {
+      const foundOffer = state.offers.find((offer) => offer.id === action.payload.id);
+      if (foundOffer) {
+        foundOffer.isFavorite = action.payload.isFavorite;
+      }
+    });
   }
 });
-
-export const nearbyOffersFetch = { fetchNearByOffers };
-export const nearbyOffersAction = nearbyOffersSlice.actions;

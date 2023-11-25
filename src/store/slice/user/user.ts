@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { AuthorizationStatus, NameSpace } from '../../../const';
 import { ServerUser } from '../../../types-ts/user';
-import { checkAuth, login, logout } from '../../thunk/auth';
+import { checkAuth, login, logout } from '../../thunk/user';
 
 interface UserSlice {
   userData: ServerUser | null;

@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { ServerOffer } from '../../types-ts/offer';
 import { FavoriteStatus, ThunkObjType } from '../../types-ts/store';
-import { APIRoute } from '../../const';
+import { APIRoute, NameSpace } from '../../const';
 
 export const fetchFavoriteOffers = createAsyncThunk<ServerOffer[], undefined, ThunkObjType>(
-  'favorite/fetchFavoriteOffers',
+  `${NameSpace.Favorite}/fetchFavoriteOffers`,
   async (_arg, { extra: api }) => {
     const response = await api.get<ServerOffer[]>(APIRoute.Favorites);
     return response.data;
@@ -12,7 +12,7 @@ export const fetchFavoriteOffers = createAsyncThunk<ServerOffer[], undefined, Th
 );
 
 export const setFavoriteOffer = createAsyncThunk<ServerOffer[], FavoriteStatus, ThunkObjType>(
-  'favorite/setFavoriteOffer',
+  `${NameSpace.Favorite}/setFavoriteOffer`,
   async ({offerId, status}, { extra: api }) => {
     const response = await api.post<ServerOffer[]>(`${APIRoute.Favorites}/${offerId}/${status}`);
     return response.data;

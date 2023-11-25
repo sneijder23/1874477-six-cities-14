@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { ServerOffer } from '../../../types-ts/offer';
-import { fetchFavoriteOffers } from '../../thunk/favorite';
+import { fetchFavoriteOffers } from '../../thunk/favorite-offers';
 import { NameSpace } from '../../../const';
 
 interface FavoriteOffersState {

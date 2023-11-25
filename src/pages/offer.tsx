@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/store';
 import { Card } from '../components/card/card';
 import { memo, useEffect } from 'react';
 import { offersAction, offersFetch } from '../store/slice/offers/offers';
-import { nearbyOffersFetch } from '../store/slice/nearby-offers/neaby-offers';
+import { nearbyOffersFetch } from '../store/slice/nearby-offers/nearby-offers';
 import { LoadingScreen } from './loading-screen';
 import { AppRoute, MAX_PICTURE_OFFER } from '../const';
 import { FavoriteButton } from '../components/favorite-button/favorite-button';
@@ -22,6 +22,8 @@ import {
 } from '../store/slice/offers/selectors';
 import { getNearbyOffers } from '../store/slice/nearby-offers/selectors';
 import { getAuthorizationStatus } from '../store/slice/user/selectors';
+import { OfferHost } from '../components/offer-host/offer-host';
+import { OfferRating } from '../components/offer-rating/offer-rating';
 
 function OfferPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -86,18 +88,11 @@ function OfferPage(): JSX.Element {
                   offer
                 />
               </div>
-              <div className="offer__rating rating">
-                <div className="offer__stars rating__stars">
-                  <span
-                    style={{ width: `${Math.round(offerState.rating) * 20}%` }}
-                  >
-                  </span>
-                  <span className="visually-hidden">Rating</span>
-                </div>
-                <span className="offer__rating-value rating__value">
-                  {offerState.rating}
-                </span>
-              </div>
+              <OfferRating
+                rating={offerState.rating}
+                className={'offer'}
+                showRatingValue
+              />
               <ul className="offer__features">
                 <li className="offer__feature offer__feature--entire">
                   {capitalizeFirstLetter(offerState.type)}
@@ -123,29 +118,7 @@ function OfferPage(): JSX.Element {
                   ))}
                 </ul>
               </div>
-              <div className="offer__host">
-                <h2 className="offer__host-title">Meet the host</h2>
-                <div className="offer__host-user user">
-                  <div className="offer__avatar-wrapper offer__avatar-wrapper--pro user__avatar-wrapper">
-                    <img
-                      className="offer__avatar user__avatar"
-                      src={offerState.host.avatarUrl}
-                      width="74"
-                      height="74"
-                      alt="Host avatar"
-                    />
-                  </div>
-                  <span className="offer__user-name">
-                    {offerState.host.name}
-                  </span>
-                  <span className="offer__user-status">
-                    {offerState.host.isPro}
-                  </span>
-                </div>
-                <div className="offer__description">
-                  <p className="offer__text">{offerState.description}</p>
-                </div>
-              </div>
+              <OfferHost offerState={offerState} />
               <section className="offer__reviews reviews">
                 <h2 className="reviews__title">
                   Reviews &middot;{' '}

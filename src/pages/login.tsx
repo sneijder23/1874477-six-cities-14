@@ -3,7 +3,7 @@ import { Header } from '../components/header/header';
 import { useDocumentTitle } from '../hooks/document-title';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { login } from '../store/thunk/auth';
+import { login } from '../store/thunk/user';
 import { offersAction } from '../store/slice/offers/offers';
 import { getRandomCity } from '../utils/utils';
 import { toast } from 'react-toastify';

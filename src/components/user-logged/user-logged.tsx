@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 import { MouseEvent, memo, useCallback, useEffect } from 'react';
 import { AppRoute } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
-import { logout } from '../../store/thunk/auth';
-import { favoriteAction } from '../../store/slice/favorite/favorite';
+import { logout } from '../../store/thunk/user';
+import { favoriteAction } from '../../store/slice/favorite/favorite-offers';
 import { getUser } from '../../store/slice/user/selectors';
 import { getFavoriteOffersCount } from '../../store/slice/favorite/selectors';
 
@@ -15,7 +15,8 @@ function UserLoggedComponent() {
     (evt: MouseEvent<HTMLAnchorElement>) => {
       evt.preventDefault();
       dispatch(logout());
-    },[dispatch]
+    },
+    [dispatch]
   );
 
   useEffect(() => {

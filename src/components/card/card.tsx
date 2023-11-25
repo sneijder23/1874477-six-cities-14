@@ -5,6 +5,7 @@ import { AppRoute } from '../../const';
 import classNames from 'classnames';
 import { HTMLAttributes, memo } from 'react';
 import { FavoriteButton } from '../favorite-button/favorite-button';
+import { OfferRating } from '../offer-rating/offer-rating';
 
 type CardProps = {
   offer: ServerOffer;
@@ -53,12 +54,7 @@ function CardComponent({ offer, screenName, offers, nearbyOffers, ...props}: Car
             nearbyOffers={nearbyOffers ?? undefined}
           />
         </div>
-        <div className="place-card__rating rating">
-          <div className="place-card__stars rating__stars">
-            <span style={{ width: `${Math.round(offer.rating) * 20}%` }}></span>
-            <span className="visually-hidden">Rating</span>
-          </div>
-        </div>
+        <OfferRating className={'place-card'} rating={offer.rating}/>
         <h2 className="place-card__name">
           <Link to={`${AppRoute.Offer}/${offer.id}`}>{offer.title}</Link>
         </h2>

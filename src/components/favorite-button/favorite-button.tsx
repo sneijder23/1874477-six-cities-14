@@ -2,13 +2,13 @@ import classNames from 'classnames';
 import { memo, useCallback } from 'react';
 import { AppRoute } from '../../const';
 import { toast } from 'react-toastify';
-import { setFavoriteOffer } from '../../store/thunk/favorite';
+import { setFavoriteOffer } from '../../store/thunk/favorite-offers';
 import { offersAction } from '../../store/slice/offers/offers';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
 import { ServerOffer } from '../../types-ts/offer';
-import { favoriteAction } from '../../store/slice/favorite/favorite';
-import { nearbyOffersAction } from '../../store/slice/nearby-offers/neaby-offers';
+import { favoriteAction } from '../../store/slice/favorite/favorite-offers';
+import { nearbyOffersAction } from '../../store/slice/nearby-offers/nearby-offers';
 import { getAuthorizationStatus } from '../../store/slice/user/selectors';
 
 interface FavoriteButtonProps {
@@ -27,7 +27,7 @@ function FavoriteButtonComponent({
   offers,
   offer,
   nearbyOffers,
-}: FavoriteButtonProps) {
+}: FavoriteButtonProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isAuth = useAppSelector(getAuthorizationStatus);

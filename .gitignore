@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+/js3-six-cities-e2e
 
 # testing
 /coverage

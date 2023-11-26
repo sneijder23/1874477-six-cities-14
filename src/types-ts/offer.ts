@@ -20,4 +20,3 @@ export type ServerOffer = {
   title: string;
   type: string;
 }
-

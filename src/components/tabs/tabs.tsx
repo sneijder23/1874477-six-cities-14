@@ -2,13 +2,14 @@ import { AppRoute, CITY_MAP } from '../../const';
 import { City } from '../../types-ts/city';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
+import { memo } from 'react';
 
 type TabsProps = {
   selectedCity: City;
   handleCityClick: (city: City) => void;
 };
 
-function Tabs({ selectedCity, handleCityClick }: TabsProps): JSX.Element {
+function TabsComponent({ selectedCity, handleCityClick }: TabsProps): JSX.Element {
   return (
     <div className="tabs">
       <section className="locations container">
@@ -32,4 +33,4 @@ function Tabs({ selectedCity, handleCityClick }: TabsProps): JSX.Element {
   );
 }
 
-export { Tabs };
+export const Tabs = memo(TabsComponent);

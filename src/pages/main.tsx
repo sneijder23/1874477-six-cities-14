@@ -1,26 +1,29 @@
 import { Header } from '../components/header/header';
-import { OffersList } from '../components/offers/offers-list';
+import { OffersList } from '../components/offers-list/offers-list';
 import { City } from '../types-ts/city';
 import { Tabs } from '../components/tabs/tabs';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
-import { offersAction, offersExtraAction } from '../store/slice/offers';
+import { offersAction } from '../store/slice/offers/offers';
 import { CITY_MAP } from '../const';
-import { useEffect } from 'react';
-import { Spinner } from './loading-screen';
+import { useCallback, useEffect } from 'react';
+import { LoadingScreen } from './loading-screen';
+import { getOffersLoadingStatus, getSelectedCity } from '../store/slice/offers/selectors';
+import { fetchAllOffers } from '../store/thunk/offers';
 
 function Main(): JSX.Element {
   const dispatch = useAppDispatch();
-  const stateCity = useAppSelector((state) => state.offers.city);
-  const isOffersLoading = useAppSelector(
-    (state) => state.offers.isOffersLoading
+  const stateCity = useAppSelector(getSelectedCity);
+  const isOffersLoading = useAppSelector(getOffersLoadingStatus);
+
+  const handleCityClick = useCallback(
+    (city: City) => {
+      dispatch(offersAction.setCitySelect(city.name));
+    },
+    [dispatch]
   );
 
-  const handleCityClick = (city: City) => {
-    dispatch(offersAction.setCitySelect(city.name));
-  };
-
   useEffect(() => {
-    dispatch(offersExtraAction.fetchAllOffers());
+    dispatch(fetchAllOffers());
   }, [dispatch]);
 
   return (
@@ -34,7 +37,7 @@ function Main(): JSX.Element {
           handleCityClick={handleCityClick}
         />
         {isOffersLoading ? (
-          <Spinner />
+          <LoadingScreen />
         ) : (
           <div className="cities">
             <OffersList city={stateCity} />

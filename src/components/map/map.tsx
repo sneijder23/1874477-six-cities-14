@@ -1,16 +1,17 @@
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import leaflet from 'leaflet';
 import { useMap } from '../../hooks/map';
 import 'leaflet/dist/leaflet.css';
 import { URL_MARKER_DEFAULT, URL_MARKER_CURRENT } from '../../const';
 import { ServerOffer } from '../../types-ts/offer';
 import { City } from '../../types-ts/city';
+import { useAppSelector } from '../../hooks/store';
+import { getActivePoint } from '../../store/slice/offers/selectors';
 
 type MapProps = {
   className: string;
   city: City;
   points: ServerOffer[];
-  activePoint: string | null;
 };
 
 const defaultCustomIcon = leaflet.icon({
@@ -25,12 +26,15 @@ const currentCustomIcon = leaflet.icon({
   iconAnchor: [13, 39],
 });
 
-function Map({ className, city, points, activePoint }: MapProps): JSX.Element {
+function MapComponent({ className, city, points }: MapProps): JSX.Element {
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
+  const activePoint = useAppSelector(getActivePoint);
+
 
   useEffect(() => {
     if (map) {
+      const activeOffer = points.find((point) => point.id === activePoint);
       points.forEach((point) => {
         leaflet
           .marker(
@@ -47,9 +51,13 @@ function Map({ className, city, points, activePoint }: MapProps): JSX.Element {
           )
           .addTo(map);
       });
+
+      if (activeOffer) {
+        map.setView([activeOffer.location.latitude, activeOffer.location.longitude], activeOffer.city.location.zoom);
+      }
     }
   }, [map, points, activePoint]);
   return <section className={`${className} map`} ref={mapRef}></section>;
 }
 
-export { Map };
+export const Map = memo(MapComponent);

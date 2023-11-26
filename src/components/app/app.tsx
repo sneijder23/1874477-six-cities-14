@@ -1,16 +1,19 @@
-import { Main } from '../../pages/main';
 import { AppRoute, CITY_MAP } from '../../const';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Login } from '../../pages/login';
 import { Offer } from '../../pages/offer';
 import { Favorities } from '../../pages/favorities';
 import { Error } from '../../pages/error';
-import { PrivateRoute } from '../route/private-route';
-import { City } from '../../types-ts/city';
+import { PrivateRoute } from '../private-route/private-route';
 import { useAppSelector } from '../../hooks/store';
+import { useMemo } from 'react';
+import { CityRoutes } from '../city-routes/city-routes';
+import { getAuthorizationCheckedStatus } from '../../store/slice/user/selectors';
+import { PublicRoute } from '../public-route/public-route';
 
 function App(): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.user.authStatus);
+  const authorizationStatus = useAppSelector(getAuthorizationCheckedStatus);
+  const cityRoutes = useMemo(() => CityRoutes(), []);
 
   return (
     <BrowserRouter>
@@ -19,14 +22,15 @@ function App(): JSX.Element {
           path={AppRoute.Root}
           element={<Navigate to={`/${Object.values(CITY_MAP)[0].name}`} />}
         />
-        {Object.values(CITY_MAP).map((city: City) => (
-          <Route
-            key={city.name}
-            path={`/${city.name}`}
-            element={<Main />}
-          />
-        ))}
-        <Route path={AppRoute.Login} element={<Login />} />
+        {cityRoutes}
+        <Route
+          path={AppRoute.Login}
+          element={
+            <PublicRoute authorizationStatus={authorizationStatus}>
+              <Login />
+            </PublicRoute>
+          }
+        />
         <Route
           path={AppRoute.Favorites}
           element={

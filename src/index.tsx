@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom/client';
 import { App } from './components/app/app';
 import { Provider } from 'react-redux';
 import { store } from './store';
-import { ErrorMessage } from './components/error-message/error-message';
-import { userAction } from './store/slice/user';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { checkAuth } from './store/thunk/user';
 
-store.dispatch(userAction.checkAuth());
+store.dispatch(checkAuth());
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -15,7 +16,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ErrorMessage />
+      <ToastContainer />
       <App />
     </Provider>
   </React.StrictMode>

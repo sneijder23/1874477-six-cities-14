@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Header } from '../components/header/header';
 import { useDocumentTitle } from '../hooks/document-title';
+import { memo } from 'react';
 
-function Error(): JSX.Element {
+function ErrorPage(): JSX.Element {
   useDocumentTitle('404 Not Found');
   return (
     <div className="page page--gray page--main">
@@ -24,4 +25,4 @@ function Error(): JSX.Element {
   );
 }
 
-export { Error };
+export const Error = memo(ErrorPage);

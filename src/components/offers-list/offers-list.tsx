@@ -33,10 +33,10 @@ function OffersList({ city }: OffersListProps): JSX.Element {
   }, [city]);
 
   return (
-    <div className="cities__places-container container">
-      {listEmpty ? (
-        <OffersListEmpty />
-      ) : (
+    listEmpty ? (
+      <OffersListEmpty />
+    ) : (
+      <div className="cities__places-container container">
         <section className="cities__places places">
           <h2 className="visually-hidden">Places</h2>
           <b className="places__found">
@@ -58,16 +58,16 @@ function OffersList({ city }: OffersListProps): JSX.Element {
             ))}
           </div>
         </section>
-      )}
-      <div className="cities__right-section">
-        <Map
-          key={city}
-          className={'cities__map'}
-          city={CITY_MAP[city]}
-          points={offersByCity}
-        />
+        <div className="cities__right-section">
+          <Map
+            key={city}
+            className={'cities__map'}
+            city={CITY_MAP[city]}
+            points={offersByCity}
+          />
+        </div>
       </div>
-    </div>
+    )
   );
 }
 

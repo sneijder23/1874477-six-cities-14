@@ -2,7 +2,6 @@ import { Header } from '../components/header/header';
 import { useDocumentTitle } from '../hooks/document-title';
 import { useNavigate, useParams } from 'react-router-dom';
 import { capitalizeFirstLetter } from '../utils/utils';
-import { ReviewForm } from '../components/review-form/review-form';
 import { ReviewsList } from '../components/reviews-list/reviews-list';
 import { Map } from '../components/map/map';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
@@ -10,7 +9,7 @@ import { Card } from '../components/card/card';
 import { useEffect } from 'react';
 import { offersAction } from '../store/slice/offers/offers';
 import { LoadingScreen } from './loading-screen';
-import { AppRoute, MAX_PICTURE_OFFER } from '../const';
+import { AppRoute, MAX_NEARBY_OFFERS, MAX_PICTURE_OFFER } from '../const';
 import { FavoriteButton } from '../components/favorite-button/favorite-button';
 import { getReviews } from '../store/slice/reviews/selectors';
 import {
@@ -19,7 +18,6 @@ import {
   getOffersLoadingStatus,
 } from '../store/slice/offers/selectors';
 import { getNearbyOffers } from '../store/slice/nearby-offers/selectors';
-import { getAuthorizationStatus } from '../store/slice/user/selectors';
 import { OfferHost } from '../components/offer-host/offer-host';
 import { OfferRating } from '../components/offer-rating/offer-rating';
 import { fetchReviews } from '../store/thunk/review';
@@ -32,9 +30,8 @@ function Offer(): JSX.Element {
   const reviewsState = useAppSelector(getReviews);
   const redirectToErrorPage = useAppSelector(getErrorStatus);
   const offerState = useAppSelector(getOffer);
-  const nerbyOffersState = useAppSelector(getNearbyOffers);
+  const nerbyOffersState = useAppSelector(getNearbyOffers).slice(0, MAX_NEARBY_OFFERS);
   const isOffersLoading = useAppSelector(getOffersLoadingStatus);
-  const isAuth = useAppSelector(getAuthorizationStatus);
 
   useDocumentTitle('Offer');
 
@@ -118,14 +115,7 @@ function Offer(): JSX.Element {
                 </ul>
               </div>
               <OfferHost host={offerState.host} description={offerState.description} />
-              <section className="offer__reviews reviews">
-                <h2 className="reviews__title">
-                  Reviews &middot;{' '}
-                  <span className="reviews__amount">{reviewsState.length}</span>
-                </h2>
-                <ReviewsList reviews={reviewsState} />
-                {isAuth && <ReviewForm id={offerState.id} />}
-              </section>
+              <ReviewsList reviews={reviewsState} offerdId={offerState.id} />
             </div>
           </div>
           <Map

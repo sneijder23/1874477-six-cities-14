@@ -17,7 +17,7 @@ function TabsComponent({ selectedCity, handleCityClick }: TabsProps): JSX.Elemen
           {Object.entries(CITY_MAP).map(([key, city]: [string, City]) => (
             <li key={key} className="locations__item">
               <Link
-                to={`${AppRoute.Root}${city.name}`}
+                to={AppRoute.Root}
                 className={classNames('locations__item-link', 'tabs__item', {
                   'tabs__item--active': selectedCity === city,
                 })}

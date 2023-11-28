@@ -1,7 +1,6 @@
-import { memo } from 'react';
 import { ClipLoader } from 'react-spinners';
 
-function LoadingScreenMemo(): JSX.Element {
+function LoadingScreen(): JSX.Element {
   return (
     <div
       style={{
@@ -21,4 +20,4 @@ function LoadingScreenMemo(): JSX.Element {
   );
 }
 
-export const LoadingScreen = memo(LoadingScreenMemo);
+export { LoadingScreen };

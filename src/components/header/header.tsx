@@ -1,11 +1,10 @@
-import { memo } from 'react';
 import { useAppSelector } from '../../hooks/store';
 import { Logo } from '../logo/logo';
 import { UserGuest } from '../user-guest/user-guest';
 import { UserLogged } from '../user-logged/user-logged';
 import { getAuthorizationStatus } from '../../store/slice/user/selectors';
 
-function HeaderComponent(): JSX.Element {
+function Header(): JSX.Element {
   const isAuth = useAppSelector(getAuthorizationStatus);
 
   return (
@@ -22,4 +21,4 @@ function HeaderComponent(): JSX.Element {
   );
 }
 
-export const Header = memo(HeaderComponent);
+export { Header };

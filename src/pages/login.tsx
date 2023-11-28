@@ -1,4 +1,4 @@
-import { FormEvent, MouseEvent, memo, useRef } from 'react';
+import { FormEvent, MouseEvent, useRef } from 'react';
 import { Header } from '../components/header/header';
 import { useDocumentTitle } from '../hooks/document-title';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
@@ -9,8 +9,9 @@ import { getRandomCity } from '../utils/utils';
 import { toast } from 'react-toastify';
 import { getAuthorizationStatus } from '../store/slice/user/selectors';
 import { getSelectedCity } from '../store/slice/offers/selectors';
+import { AppRoute } from '../const';
 
-function LoginPage(): JSX.Element {
+function Login(): JSX.Element {
   useDocumentTitle('Login');
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -58,7 +59,7 @@ function LoginPage(): JSX.Element {
   const handleButtonClick = (evt: MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
     dispatch(offersAction.setCitySelect(randomCity.name));
-    navigate(`/${randomCity.name}`);
+    navigate(AppRoute.Root);
   };
 
   if (isAuth) {
@@ -126,4 +127,4 @@ function LoginPage(): JSX.Element {
   );
 }
 
-export const Login = memo(LoginPage);
+export { Login };

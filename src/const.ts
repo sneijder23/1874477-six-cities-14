@@ -4,7 +4,9 @@ export const DEFAULT_CITY = 'Paris';
 
 export const TIMEOUT_SHOW_ERROR = 2000;
 
-export const MAX_REVIEW_LENGHT: number = 10;
+export const MAX_REVIEW_LENGTH = 10;
+
+export const MAX_NEARBY_OFFERS = 3;
 
 export const MIN_TEXTAREA_LENGTH = 50;
 

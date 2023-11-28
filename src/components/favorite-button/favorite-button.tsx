@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import { memo, useCallback } from 'react';
 import { AppRoute } from '../../const';
-import { toast } from 'react-toastify';
 import { fetchFavoriteOffers, setFavoriteOffer } from '../../store/thunk/favorite-offers';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
@@ -41,12 +40,7 @@ function FavoriteButtonComponent({
         status: updatedFavoriteStatus,
       })
     )
-      .unwrap()
-      .then(() => dispatch(fetchFavoriteOffers()))
-      .catch((error: Error) => {
-        toast.error(error.message);
-      });
-
+      .then(() => dispatch(fetchFavoriteOffers()));
 
     if (!isAuth) {
       navigate(AppRoute.Login);

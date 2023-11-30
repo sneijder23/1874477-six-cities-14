@@ -1,5 +1,6 @@
 import { AxiosInstance } from 'axios';
 import { store } from '../store/index';
+import { ServerOffer } from './offer';
 
 export type State = ReturnType<typeof store.getState>;
 
@@ -14,4 +15,14 @@ export type ThunkObjType = {
 export type FavoriteStatus = {
   offerId: string;
   status: number;
+}
+
+export interface FavoriteOfferResponse extends ServerOffer {
+  status: number;
+}
+
+export type PostReviewRequest = {
+  offerId: string;
+  rating: number;
+  comment: string;
 }

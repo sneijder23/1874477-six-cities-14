@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus } from '../../const';
-import { LoadingScreen } from '../../pages/loading-screen';
+import { Spinner } from '../spinner/spinner';
 
 type PublicRouteProps = {
   authorizationStatus: AuthorizationStatus;
@@ -11,7 +11,7 @@ function PublicRoute(props: PublicRouteProps): JSX.Element {
   const { authorizationStatus, children } = props;
 
   if (authorizationStatus === AuthorizationStatus.Unknown) {
-    return <LoadingScreen />;
+    return <Spinner />;
   }
 
   return authorizationStatus === AuthorizationStatus.Auth ? (

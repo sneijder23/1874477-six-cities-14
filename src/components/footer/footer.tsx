@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
-import { memo } from 'react';
 
-function FooterComponent() {
+function Footer() {
   return (
     <footer className="footer container">
       <Link className="footer__logo-link" to={AppRoute.Root}>
@@ -18,4 +17,4 @@ function FooterComponent() {
   );
 }
 
-export const Footer = memo(FooterComponent);
+export { Footer };

@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { SortTypes } from '../../const';
+import { SortType } from '../../const';
 import classNames from 'classnames';
 import { ServerOffer } from '../../types-ts/offer';
 
@@ -8,15 +8,15 @@ type SortProps = {
   setActiveSort: React.Dispatch<React.SetStateAction<string>>;
 };
 
-type SortTypeKey = keyof typeof SortTypes;
+type SortTypeKey = keyof typeof SortType;
 
 export function CreateSortingOffers(activeSort: string, offers: ServerOffer[]) {
   switch (activeSort) {
-    case SortTypes.PriceLowToHigh:
+    case SortType.PriceLowToHigh:
       return [...offers].sort((a, b) => a.price - b.price);
-    case SortTypes.PriceHighToLow:
+    case SortType.PriceHighToLow:
       return [...offers].sort((a, b) => b.price - a.price);
-    case SortTypes.TopRatedFirst:
+    case SortType.TopRatedFirst:
       return [...offers].sort((a, b) => b.rating - a.rating);
     default:
       return offers;
@@ -48,20 +48,20 @@ function SortComponent({ activeSort, setActiveSort }: SortProps): JSX.Element {
           'places__options--opened': isOpened,
         })}
       >
-        {Object.keys(SortTypes).map((key) => (
+        {Object.keys(SortType).map((key) => (
           <li
             key={key}
             className={classNames('places__option', {
               'places__option--active':
-                SortTypes[key as SortTypeKey] === activeSort,
+                SortType[key as SortTypeKey] === activeSort,
             })}
             onClick={() => {
-              setActiveSort(SortTypes[key as SortTypeKey]);
+              setActiveSort(SortType[key as SortTypeKey]);
               toggleOptions();
             }}
             tabIndex={0}
           >
-            {SortTypes[key as SortTypeKey]}
+            {SortType[key as SortTypeKey]}
           </li>
         ))}
       </ul>

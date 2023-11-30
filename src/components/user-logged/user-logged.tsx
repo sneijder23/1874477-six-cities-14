@@ -21,7 +21,7 @@ function UserLoggedComponent() {
 
   useEffect(() => {
     dispatch(fetchFavoriteOffers());
-  }, [dispatch, userData]);
+  }, [dispatch]);
 
   return (
     userData && (

@@ -7,11 +7,13 @@ import { ServerOffer } from '../../types-ts/offer';
 import { City } from '../../types-ts/city';
 import { useAppSelector } from '../../hooks/store';
 import { getActivePoint } from '../../store/slice/offers/selectors';
+import classNames from 'classnames';
 
 type MapProps = {
   className: string;
   city: City;
   points: ServerOffer[];
+  itOfferPage?: boolean;
 };
 
 const defaultCustomIcon = leaflet.icon({
@@ -26,7 +28,7 @@ const currentCustomIcon = leaflet.icon({
   iconAnchor: [13, 39],
 });
 
-function MapComponent({ className, city, points }: MapProps): JSX.Element {
+function MapComponent({ className, city, points, itOfferPage }: MapProps): JSX.Element {
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
   const activePoint = useAppSelector(getActivePoint);
@@ -34,6 +36,12 @@ function MapComponent({ className, city, points }: MapProps): JSX.Element {
 
   useEffect(() => {
     if (map) {
+      map.eachLayer((layer) => {
+        if (layer instanceof leaflet.Marker) {
+          map.removeLayer(layer);
+        }
+      });
+
       const activeOffer = points.find((point) => point.id === activePoint);
       points.forEach((point) => {
         leaflet
@@ -52,12 +60,12 @@ function MapComponent({ className, city, points }: MapProps): JSX.Element {
           .addTo(map);
       });
 
-      if (activeOffer) {
+      if (activeOffer && !itOfferPage) {
         map.setView([activeOffer.location.latitude, activeOffer.location.longitude], activeOffer.city.location.zoom);
       }
     }
-  }, [map, points, activePoint]);
-  return <section className={`${className} map`} ref={mapRef}></section>;
+  }, [map, points, activePoint, itOfferPage]);
+  return <section className={classNames(className, 'map')} ref={mapRef}></section>;
 }
 
 export const Map = memo(MapComponent);

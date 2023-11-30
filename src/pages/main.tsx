@@ -4,16 +4,22 @@ import { City } from '../types-ts/city';
 import { Tabs } from '../components/tabs/tabs';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
 import { offersAction } from '../store/slice/offers/offers';
-import { CITY_MAP } from '../const';
+import { CITIES_MAP } from '../const';
 import { useCallback, useEffect } from 'react';
-import { LoadingScreen } from './loading-screen';
-import { getOffersLoadingStatus, getSelectedCity } from '../store/slice/offers/selectors';
+import { Spinner } from '../components/spinner/spinner';
+import {
+  getOffers,
+  getOffersLoadingStatus,
+  getSelectedCity,
+} from '../store/slice/offers/selectors';
 import { fetchAllOffers } from '../store/thunk/offers';
+import classNames from 'classnames';
 
 function Main(): JSX.Element {
   const dispatch = useAppDispatch();
   const stateCity = useAppSelector(getSelectedCity);
   const isOffersLoading = useAppSelector(getOffersLoadingStatus);
+  const offersState = useAppSelector(getOffers).length === 0;
 
   const handleCityClick = useCallback(
     (city: City) => {
@@ -27,17 +33,21 @@ function Main(): JSX.Element {
   }, [dispatch]);
 
   return (
-    <div className="page page--gray page--main">
+    <div
+      className={classNames('page page--gray page--main', {
+        'page__main--index-empty': offersState,
+      })}
+    >
       <Header />
 
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
         <Tabs
-          selectedCity={CITY_MAP[stateCity]}
+          selectedCity={CITIES_MAP[stateCity]}
           handleCityClick={handleCityClick}
         />
         {isOffersLoading ? (
-          <LoadingScreen />
+          <Spinner />
         ) : (
           <div className="cities">
             <OffersList city={stateCity} />

@@ -1,10 +1,16 @@
 import { City } from './types-ts/city';
 
+export const BACKEND_URL = 'https://14.design.pages.academy/six-cities';
+
+export const REQUEST_TIMEOUT = 5000;
+
 export const DEFAULT_CITY = 'Paris';
 
 export const TIMEOUT_SHOW_ERROR = 2000;
 
-export const MAX_REVIEW_LENGHT: number = 10;
+export const MAX_REVIEW_LENGTH = 10;
+
+export const MAX_NEARBY_OFFERS = 3;
 
 export const MIN_TEXTAREA_LENGTH = 50;
 
@@ -55,7 +61,7 @@ export const enum NameSpace {
   Favorite = 'FAVORITE',
 }
 
-export const CITY_MAP: Record<string, City> = {
+export const CITIES_MAP: Record<string, City> = {
   'Paris': {
     name: 'Paris',
     location: {
@@ -106,7 +112,7 @@ export const CITY_MAP: Record<string, City> = {
   },
 } as const;
 
-export const SortTypes = {
+export const SortType = {
   Popular: 'Popular',
   PriceLowToHigh: 'Price: low to high',
   PriceHighToLow: 'Price: high to low',

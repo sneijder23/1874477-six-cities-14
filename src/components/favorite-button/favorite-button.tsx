@@ -1,8 +1,7 @@
 import classNames from 'classnames';
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 import { AppRoute } from '../../const';
-import { toast } from 'react-toastify';
-import { fetchFavoriteOffers, setFavoriteOffer } from '../../store/thunk/favorite-offers';
+import { setFavoriteOffer } from '../../store/thunk/favorite-offers';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
 import { ServerOffer } from '../../types-ts/offer';
@@ -14,11 +13,7 @@ interface FavoriteButtonProps {
   offerState: ServerOffer;
 }
 
-function FavoriteButtonComponent({
-  className,
-  bigIcon,
-  offerState,
-}: FavoriteButtonProps): JSX.Element {
+function FavoriteButtonComponent({ className, bigIcon, offerState }: FavoriteButtonProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isAuth = useAppSelector(getAuthorizationStatus);
@@ -32,7 +27,7 @@ function FavoriteButtonComponent({
   };
   const classNameButton = className ? `${className}` : 'place-card';
 
-  const handleFavoriteClick = useCallback(() => {
+  const handleFavoriteClick = () => {
     const updatedFavoriteStatus = !offerState.isFavorite ? 1 : 0;
 
     dispatch(
@@ -40,18 +35,12 @@ function FavoriteButtonComponent({
         offerId: offerState.id,
         status: updatedFavoriteStatus,
       })
-    )
-      .unwrap()
-      .then(() => dispatch(fetchFavoriteOffers()))
-      .catch((error: Error) => {
-        toast.error(error.message);
-      });
-
+    );
 
     if (!isAuth) {
       navigate(AppRoute.Login);
     }
-  }, [offerState, isAuth, dispatch, navigate]);
+  };
 
   return (
     <button

@@ -4,7 +4,7 @@ import { Card } from '../card/card';
 import { memo } from 'react';
 import { City } from '../../types-ts/city';
 import { useAppSelector } from '../../hooks/store';
-import { getFavoriteLoadingStatus } from '../../store/slice/favorite/selectors';
+import { getFavoriteLoadingStatus } from '../../store/slice/favorite-offers/selectors';
 import { Spinner } from '../spinner/spinner';
 
 function FavoriteListComponent({

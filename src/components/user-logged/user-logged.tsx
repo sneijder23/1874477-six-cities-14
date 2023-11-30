@@ -4,7 +4,7 @@ import { AppRoute } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
 import { logout } from '../../store/thunk/user';
 import { getUser } from '../../store/slice/user/selectors';
-import { getFavoriteOffersCount } from '../../store/slice/favorite/selectors';
+import { getFavoriteOffersCount } from '../../store/slice/favorite-offers/selectors';
 import { fetchFavoriteOffers } from '../../store/thunk/favorite-offers';
 
 function UserLoggedComponent() {

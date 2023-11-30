@@ -12,6 +12,11 @@ export type ThunkObjType = {
   extra: AxiosInstance;
 };
 
+export type LoginData = {
+  email: string;
+  password: string;
+}
+
 export type FavoriteStatus = {
   offerId: string;
   status: number;

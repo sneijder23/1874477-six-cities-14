@@ -7,8 +7,3 @@ export type ServerUser = {
 }
 
 export type User = Omit<ServerUser, 'email' | 'token'>;
-
-export type LoginData = {
-  email: string;
-  password: string;
-}

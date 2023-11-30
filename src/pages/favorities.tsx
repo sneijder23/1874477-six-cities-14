@@ -4,7 +4,7 @@ import { Header } from '../components/header/header';
 import { useDocumentTitle } from '../hooks/document-title';
 import { useAppSelector } from '../hooks/store';
 import { Footer } from '../components/footer/footer';
-import { getFavoriteOffers } from '../store/slice/favorite/selectors';
+import { getFavoriteOffers } from '../store/slice/favorite-offers/selectors';
 import classnames from 'classnames';
 
 function Favorities(): JSX.Element {
@@ -13,7 +13,7 @@ function Favorities(): JSX.Element {
   const listEmpty = favoriteOffers.length === 0;
 
   return (
-    <div className={classnames('page', {'page--favorites-empty': listEmpty})}>
+    <div className={classnames('page', { 'page--favorites-empty': listEmpty })}>
       <Header />
       {listEmpty ? (
         <FavoriteEmpty />

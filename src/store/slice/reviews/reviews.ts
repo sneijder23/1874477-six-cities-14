@@ -17,10 +17,6 @@ const processPostPending = (state: ReviewsState) => {
   state.isPosting = true;
 };
 
-const processPostSuccess = (state: ReviewsState) => {
-  state.isPosting = false;
-};
-
 const processPostFailed = (state: ReviewsState) => {
   state.isPosting = false;
 };
@@ -37,10 +33,12 @@ export const reviewsSlice = createSlice({
       state.reviews = action.payload;
     });
     builder.addCase(postReview.pending, processPostPending);
-    builder.addCase(postReview.fulfilled, processPostSuccess);
+    builder.addCase(postReview.fulfilled, (state, action: PayloadAction<Review>) => {
+      state.reviews = state.reviews.concat(action.payload);
+      state.isPosting = false;
+    });
     builder.addCase(postReview.rejected, processPostFailed);
   }
 });
 
-export const reviewsExtraAction = { fetchReviews, postReview };
 export const reviewssAction = reviewsSlice.actions;

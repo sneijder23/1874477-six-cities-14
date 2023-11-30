@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import leaflet from 'leaflet';
 import { useMap } from '../../hooks/map';
 import 'leaflet/dist/leaflet.css';
@@ -13,6 +13,7 @@ type MapProps = {
   className: string;
   city: City;
   points: ServerOffer[];
+  itOfferPage?: boolean;
 };
 
 const defaultCustomIcon = leaflet.icon({
@@ -27,7 +28,7 @@ const currentCustomIcon = leaflet.icon({
   iconAnchor: [13, 39],
 });
 
-function Map({ className, city, points }: MapProps): JSX.Element {
+function MapComponent({ className, city, points, itOfferPage }: MapProps): JSX.Element {
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
   const activePoint = useAppSelector(getActivePoint);
@@ -59,12 +60,12 @@ function Map({ className, city, points }: MapProps): JSX.Element {
           .addTo(map);
       });
 
-      if (activeOffer) {
+      if (activeOffer && !itOfferPage) {
         map.setView([activeOffer.location.latitude, activeOffer.location.longitude], activeOffer.city.location.zoom);
       }
     }
-  }, [map, points, activePoint]);
+  }, [map, points, activePoint, itOfferPage]);
   return <section className={classNames(className, 'map')} ref={mapRef}></section>;
 }
 
-export { Map };
+export const Map = memo(MapComponent);

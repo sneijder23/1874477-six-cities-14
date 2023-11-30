@@ -1,7 +1,6 @@
 export type ServerUser = {
   avatarUrl: string;
   email: string;
-  id: string;
   isPro: boolean;
   name: string;
   token: string;

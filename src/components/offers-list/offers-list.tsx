@@ -1,4 +1,4 @@
-import { CITY_MAP, SortTypes } from '../../const';
+import { CITIES_MAP, SortType } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
 import { Card } from '../card/card';
 import { Map } from '../map/map';
@@ -14,7 +14,7 @@ type OffersListProps = {
 
 function OffersList({ city }: OffersListProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const [activeSort, setActiveSort] = useState<string>(SortTypes.Popular);
+  const [activeSort, setActiveSort] = useState<string>(SortType.Popular);
   const offersState = useAppSelector(getOffers);
   const offersByCity = offersState
     .slice()
@@ -29,7 +29,7 @@ function OffersList({ city }: OffersListProps): JSX.Element {
   const handleMouseLeave = () => dispatch(offersAction.setActivePoint(undefined));
 
   useEffect(() => {
-    setActiveSort(SortTypes.Popular);
+    setActiveSort(SortType.Popular);
   }, [city]);
 
   return (
@@ -62,7 +62,7 @@ function OffersList({ city }: OffersListProps): JSX.Element {
           <Map
             key={city}
             className={'cities__map'}
-            city={CITY_MAP[city]}
+            city={CITIES_MAP[city]}
             points={offersByCity}
           />
         </div>

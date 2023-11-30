@@ -1,6 +1,6 @@
 import { ClipLoader } from 'react-spinners';
 
-function LoadingScreen(): JSX.Element {
+function Spinner(): JSX.Element {
   return (
     <div
       style={{
@@ -11,7 +11,7 @@ function LoadingScreen(): JSX.Element {
       }}
     >
       <div>
-        <p style={{ fontSize: 36, color: '#333333' }}>Loading ...</p>
+        <p style={{ fontSize: 36, color: '#333333' }}>Loading...</p>
         <div style={{ marginTop: 20, marginLeft: 34 }}>
           <ClipLoader color="#3671d6" loading size={100} />
         </div>
@@ -20,4 +20,4 @@ function LoadingScreen(): JSX.Element {
   );
 }
 
-export { LoadingScreen };
+export { Spinner };

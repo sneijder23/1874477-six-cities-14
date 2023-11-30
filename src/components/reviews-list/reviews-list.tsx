@@ -12,10 +12,7 @@ type ReviewListProps = {
   offerdId: ServerOffer['id'];
 };
 
-function ReviewsListComponent({
-  reviews,
-  offerdId,
-}: ReviewListProps): JSX.Element {
+function ReviewsListComponent({ reviews, offerdId }: ReviewListProps): JSX.Element {
   const isAuth = useAppSelector(getAuthorizationStatus);
   const sortedReviews = [...reviews].sort((review1, review2) => {
     const date1 = new Date(review1.date);

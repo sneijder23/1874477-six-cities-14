@@ -3,34 +3,17 @@ import { FavoriteEmpty } from '../components/favorite-empty/favorite-empty';
 import { Header } from '../components/header/header';
 import { useDocumentTitle } from '../hooks/document-title';
 import { useAppSelector } from '../hooks/store';
-import { City } from '../types-ts/city';
-import { ServerOffer } from '../types-ts/offer';
 import { Footer } from '../components/footer/footer';
 import { getFavoriteOffers } from '../store/slice/favorite/selectors';
+import classnames from 'classnames';
 
 function Favorities(): JSX.Element {
   useDocumentTitle('Favorites');
-  const favoriteState = useAppSelector(getFavoriteOffers);
-
-  const favoritesList: { city: City; offers: ServerOffer[] }[] = favoriteState.reduce<{ city: City; offers: ServerOffer[] }[]>((acc, cur) => {
-    if (cur.isFavorite) {
-      const existingCity = acc.find((item) => item.city.name === cur.city.name);
-      if (existingCity) {
-        existingCity.offers.push(cur);
-      } else {
-        acc.push({
-          city: cur.city,
-          offers: [cur],
-        });
-      }
-    }
-    return acc;
-  }, []);
-
-  const listEmpty = favoritesList.length === 0;
+  const favoriteOffers = useAppSelector(getFavoriteOffers);
+  const listEmpty = favoriteOffers.length === 0;
 
   return (
-    <div className="page">
+    <div className={classnames('page', {'page--favorites-empty': listEmpty})}>
       <Header />
       {listEmpty ? (
         <FavoriteEmpty />
@@ -39,7 +22,7 @@ function Favorities(): JSX.Element {
           <div className="page__favorites-container container">
             <section className="favorites">
               <h1 className="favorites__title">Saved listing</h1>
-              <FavoriteList favoriteList={favoritesList} />
+              <FavoriteList favoriteOffers={favoriteOffers} />
             </section>
           </div>
         </main>

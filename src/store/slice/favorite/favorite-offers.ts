@@ -1,18 +1,17 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { ServerOffer } from '../../../types-ts/offer';
-import { fetchFavoriteOffers } from '../../thunk/favorite-offers';
+import { fetchFavoriteOffers, setFavoriteOffer } from '../../thunk/favorite-offers';
 import { NameSpace } from '../../../const';
+import { FavoriteOfferResponse } from '../../../types-ts/store';
 
 interface FavoriteOffersState {
   offers: ServerOffer[];
   isOffersLoading: boolean;
-  redirectToErrorPage: boolean;
 }
 
 const initialState: FavoriteOffersState = {
   offers: [],
   isOffersLoading: false,
-  redirectToErrorPage: false,
 };
 
 const processSuccess = (state: FavoriteOffersState, action: PayloadAction<ServerOffer[]>) => {
@@ -23,12 +22,10 @@ const processSuccess = (state: FavoriteOffersState, action: PayloadAction<Server
 
 const processFailed = (state: FavoriteOffersState) => {
   state.isOffersLoading = false;
-  state.redirectToErrorPage = true;
 };
 
 const processPending = (state: FavoriteOffersState) => {
   state.isOffersLoading = true;
-  state.redirectToErrorPage = false;
 };
 
 export const favoriteOffersSlice = createSlice({
@@ -40,5 +37,14 @@ export const favoriteOffersSlice = createSlice({
     builder.addCase(fetchFavoriteOffers.pending, processPending);
     builder.addCase(fetchFavoriteOffers.fulfilled, processSuccess);
     builder.addCase(fetchFavoriteOffers.rejected, processFailed);
+    builder.addCase(setFavoriteOffer.fulfilled, (state, action: PayloadAction<FavoriteOfferResponse>) => {
+      const id = action.payload.id;
+      if (action.payload.status === 0) {
+        state.offers = state.offers.filter((offer) => offer.id !== id);
+      }
+      if (action.payload.status === 1) {
+        state.offers = state.offers.concat(action.payload);
+      }
+    });
   }
 });

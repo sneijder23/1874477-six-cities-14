@@ -1,8 +1,7 @@
-import { memo } from 'react';
 import { useAppSelector } from '../../hooks/store';
 import { getSelectedCity } from '../../store/slice/offers/selectors';
 
-function OffersListEmptyComponent(): JSX.Element {
+function OffersListEmpty(): JSX.Element {
   const stateCity = useAppSelector(getSelectedCity);
 
   return (
@@ -20,4 +19,4 @@ function OffersListEmptyComponent(): JSX.Element {
   );
 }
 
-export const OffersListEmpty = memo(OffersListEmptyComponent);
+export { OffersListEmpty };

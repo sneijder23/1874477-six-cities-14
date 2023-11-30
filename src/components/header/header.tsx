@@ -4,7 +4,7 @@ import { UserGuest } from '../user-guest/user-guest';
 import { UserLogged } from '../user-logged/user-logged';
 import { getAuthorizationStatus } from '../../store/slice/user/selectors';
 
-function Header(): JSX.Element {
+function Header({ isLoginPage }: { isLoginPage?: boolean }): JSX.Element {
   const isAuth = useAppSelector(getAuthorizationStatus);
 
   return (
@@ -12,9 +12,10 @@ function Header(): JSX.Element {
       <div className="container">
         <div className="header__wrapper">
           <Logo />
+          {!isLoginPage &&
           <nav className="header__nav">
             {isAuth ? <UserLogged /> : <UserGuest />}
-          </nav>
+          </nav>}
         </div>
       </div>
     </header>

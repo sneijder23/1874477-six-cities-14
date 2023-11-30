@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/store';
 import { Card } from '../components/card/card';
 import { useEffect } from 'react';
 import { offersAction } from '../store/slice/offers/offers';
-import { LoadingScreen } from './loading-screen';
+import { Spinner } from '../components/spinner/spinner';
 import { AppRoute, MAX_NEARBY_OFFERS, MAX_PICTURE_OFFER } from '../const';
 import { FavoriteButton } from '../components/favorite-button/favorite-button';
 import { getReviews } from '../store/slice/reviews/selectors';
@@ -30,7 +30,10 @@ function Offer(): JSX.Element {
   const reviewsState = useAppSelector(getReviews);
   const redirectToErrorPage = useAppSelector(getErrorStatus);
   const offerState = useAppSelector(getOffer);
-  const nerbyOffersState = useAppSelector(getNearbyOffers).slice(0, MAX_NEARBY_OFFERS);
+  const nerbyOffersState = useAppSelector(getNearbyOffers).slice(
+    0,
+    MAX_NEARBY_OFFERS
+  );
   const isOffersLoading = useAppSelector(getOffersLoadingStatus);
 
   useDocumentTitle('Offer');
@@ -40,15 +43,17 @@ function Offer(): JSX.Element {
       dispatch(fetchOneOffer(id));
       dispatch(fetchNearByOffers(id));
       dispatch(fetchReviews(id));
+      dispatch(offersAction.setActivePoint(id));
     }
     if (redirectToErrorPage) {
       dispatch(offersAction.resetRedirectToErrorPage());
+      dispatch(offersAction.setActivePoint(undefined));
       navigate(AppRoute.Error);
     }
   }, [dispatch, id, navigate, redirectToErrorPage]);
 
   if (!offerState || !nerbyOffersState || isOffersLoading) {
-    return <LoadingScreen />;
+    return <Spinner />;
   }
 
   return (
@@ -114,7 +119,10 @@ function Offer(): JSX.Element {
                   ))}
                 </ul>
               </div>
-              <OfferHost host={offerState.host} description={offerState.description} />
+              <OfferHost
+                host={offerState.host}
+                description={offerState.description}
+              />
               <ReviewsList reviews={reviewsState} offerdId={offerState.id} />
             </div>
           </div>
@@ -122,7 +130,8 @@ function Offer(): JSX.Element {
             key={offerState.id}
             className={'offer__map'}
             city={offerState.city}
-            points={nerbyOffersState}
+            points={[offerState, ...nerbyOffersState]}
+            itOfferPage
           />
         </section>
         <div className="container">
@@ -132,11 +141,7 @@ function Offer(): JSX.Element {
             </h2>
             <div className="near-places__list places__list">
               {nerbyOffersState.map((offer) => (
-                <Card
-                  key={offer.id}
-                  screenName="near-places"
-                  offer={offer}
-                />
+                <Card key={offer.id} screenName="near-places" offer={offer} />
               ))}
             </div>
           </section>

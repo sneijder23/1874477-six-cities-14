@@ -1,48 +1,46 @@
-import { useState, useRef, memo } from 'react';
+import { useState, useRef, memo, FormEvent, ChangeEvent } from 'react';
 import { MIN_TEXTAREA_LENGTH, MAX_TEXTAREA_LENGTH } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
-import { reviewsExtraAction } from '../../store/slice/reviews/reviews';
 import { Rating } from '../rating/rating';
 import { getPostingStatus } from '../../store/slice/reviews/selectors';
 import { toast } from 'react-toastify';
+import { postReview } from '../../store/thunk/review';
 
 function ReviewFormComponent({ id }: { id: string }): JSX.Element {
+  const dispatch = useAppDispatch();
+  const formRef = useRef<HTMLFormElement>(null);
+  const isPosting = useAppSelector(getPostingStatus);
   const initialFormData = {
     rating: '',
     comment: '',
   };
-  const offerId = id;
-  const dispatch = useAppDispatch();
-  const formRef = useRef<HTMLFormElement>(null);
-  const isPosting = useAppSelector(getPostingStatus);
   const [formData, setFormData] = useState(initialFormData);
+  const offerId = id;
   const isValidate =
-    formData.comment.length < MIN_TEXTAREA_LENGTH ||
-    formData.comment.length > MAX_TEXTAREA_LENGTH ||
-    formData.rating === '' ||
-    isPosting;
+    formData.comment.length >= MIN_TEXTAREA_LENGTH &&
+    formData.comment.length <= MAX_TEXTAREA_LENGTH &&
+    formData.rating !== '' &&
+    !isPosting;
 
   const handleFieldChange = (
-    evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = evt.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const hadleFormSubmit = (evt: React.FormEvent) => {
+  const hadleFormSubmit = (evt: FormEvent) => {
     evt.preventDefault();
     const rating = parseFloat(formData.rating);
     dispatch(
-      reviewsExtraAction.postReview({
+      postReview({
         offerId,
         rating,
         comment: formData.comment,
-      })
-    ).unwrap()
+      }))
+      .unwrap()
       .then(() => {
-        dispatch(reviewsExtraAction.fetchReviews(offerId));
         setFormData(initialFormData);
-        formRef.current?.reset();
       })
       .catch((error: Error) => {
         toast.warn(error.message);
@@ -51,11 +49,11 @@ function ReviewFormComponent({ id }: { id: string }): JSX.Element {
 
   return (
     <form
-      onSubmit={hadleFormSubmit}
-      ref={formRef}
       className="reviews__form form"
       action="#"
       method="post"
+      onSubmit={hadleFormSubmit}
+      ref={formRef}
     >
       <label className="reviews__label form__label" htmlFor="comment">
         Your review
@@ -71,7 +69,7 @@ function ReviewFormComponent({ id }: { id: string }): JSX.Element {
         id="comment"
         name="comment"
         minLength={50}
-        maxLength={300}
+        value={formData.comment}
         placeholder="Tell how was your stay, what you like and what can be improved"
         disabled={isPosting}
       >
@@ -85,7 +83,7 @@ function ReviewFormComponent({ id }: { id: string }): JSX.Element {
         <button
           className="reviews__submit form__submit button"
           type="submit"
-          disabled={isValidate}
+          disabled={!isValidate}
         >
           {isPosting ? 'Submit...' : 'Submit'}
         </button>

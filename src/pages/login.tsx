@@ -27,7 +27,7 @@ function Login(): JSX.Element {
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
-    if (loginRef.current?.value && passwordRef.current?.value) {
+    if (loginRef.current !== null && passwordRef.current !== null) {
       if (!loginRegExp.test(loginRef.current?.value)) {
         return toast.warn('Неверный формат логина email');
       }
@@ -46,13 +46,11 @@ function Login(): JSX.Element {
       )
         .unwrap()
         .then(() => {
-          toast.success('Succes login');
+          navigate(-1);
         })
         .catch((error: Error) => {
           toast.error(error.message);
         });
-
-      navigate(-1);
     }
   };
 
@@ -68,7 +66,7 @@ function Login(): JSX.Element {
 
   return (
     <div className="page page--gray page--login">
-      <Header />
+      <Header isLoginPage/>
 
       <main className="page__main page__main--login">
         <div className="page__login-container container">

@@ -12,17 +12,19 @@ export const MAX_REVIEW_LENGTH = 10;
 
 export const MAX_NEARBY_OFFERS = 3;
 
-export const MIN_TEXTAREA_LENGTH = 50;
-
-export const MAX_TEXTAREA_LENGTH = 300;
+export const TextareaLenght = {
+  MinLenght: 50,
+  MaxLenght: 300,
+} as const;
 
 export const MAX_PICTURE_OFFER = 6;
 
 export const APP_NAME: string = '6 cities';
 
-export const URL_MARKER_DEFAULT = 'img/pin.svg';
-
-export const URL_MARKER_CURRENT = 'img/pin-active.svg';
+export const enum UrlMarker {
+  Default = 'img/pin.svg',
+  Current = 'img/pin-active.svg'
+}
 
 export const TITLE_LAYER_URL =
   'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
@@ -56,7 +58,7 @@ export const enum AuthorizationStatus {
 export const enum NameSpace {
   Offer = 'OFFER',
   NearbyOffer = 'NEARBY_OFFER',
-  Review = 'RERVIEW',
+  Review = 'REVIEW',
   User = 'USER',
   Favorite = 'FAVORITE',
 }

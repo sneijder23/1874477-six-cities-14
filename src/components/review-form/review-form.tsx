@@ -1,5 +1,5 @@
 import { useState, useRef, memo, FormEvent, ChangeEvent } from 'react';
-import { MIN_TEXTAREA_LENGTH, MAX_TEXTAREA_LENGTH } from '../../const';
+import { TextareaLenght } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/store';
 import { Rating } from '../rating/rating';
 import { getPostingStatus } from '../../store/slice/reviews/selectors';
@@ -17,8 +17,8 @@ function ReviewFormComponent({ id }: { id: string }): JSX.Element {
   const [formData, setFormData] = useState(initialFormData);
   const offerId = id;
   const isValidate =
-    formData.comment.length >= MIN_TEXTAREA_LENGTH &&
-    formData.comment.length <= MAX_TEXTAREA_LENGTH &&
+    formData.comment.length >= TextareaLenght.MinLenght &&
+    formData.comment.length <= TextareaLenght.MaxLenght &&
     formData.rating !== '' &&
     !isPosting;
 
@@ -37,7 +37,8 @@ function ReviewFormComponent({ id }: { id: string }): JSX.Element {
         offerId,
         rating,
         comment: formData.comment,
-      }))
+      })
+    )
       .unwrap()
       .then(() => {
         setFormData(initialFormData);

@@ -18,7 +18,7 @@ function CardComponent({ offer, screenName, ...props}: CardProps): JSX.Element {
   const isFavoriteScreen = screenName === 'favorites';
 
   return (
-    <article className={`${cardClass} place-card`} {...props}>
+    <article className={`${cardClass} place-card`} {...props} data-testid='card-item'>
       {offer.isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>

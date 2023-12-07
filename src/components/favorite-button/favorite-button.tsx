@@ -54,6 +54,7 @@ function FavoriteButtonComponent({ className, bigIcon, offerState }: FavoriteBut
       )}
       type="button"
       onClick={handleFavoriteClick}
+      data-testid='favorite-button'
     >
       <svg className={`${classNameButton}__bookmark-icon`} style={iconStyle}>
         <use xlinkHref="#icon-bookmark"></use>

@@ -12,7 +12,7 @@ type TabsProps = {
 function TabsComponent({ selectedCity, handleCityClick }: TabsProps): JSX.Element {
   return (
     <div className="tabs">
-      <section className="locations container">
+      <section className="locations container" data-testid='tabs'>
         <ul className="locations__list tabs__list">
           {Object.entries(CITIES_MAP).map(([key, city]: [string, City]) => (
             <li key={key} className="locations__item">

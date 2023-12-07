@@ -4,7 +4,7 @@ import { Card } from '../card/card';
 import { Map } from '../map/map';
 import { useEffect, useMemo, useState } from 'react';
 import { Sort, CreateSortingOffers } from '../sort/sort';
-import { OffersListEmpty } from '../offers-list-empy/offers-list-empty';
+import { OffersListEmpty } from '../offers-list-empty/offers-list-empty';
 import { getOffers } from '../../store/slice/offers/selectors';
 import { offersAction } from '../../store/slice/offers/offers';
 

@@ -4,7 +4,7 @@ import { memo } from 'react';
 
 function UserGuestComponent() {
   return (
-    <ul className="header__nav-list">
+    <ul className="header__nav-list" data-testid='guest'>
       <li className="header__nav-item user">
         <Link
           className="header__nav-link header__nav-link--profile"

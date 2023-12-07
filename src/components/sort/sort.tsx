@@ -5,7 +5,7 @@ import { ServerOffer } from '../../types-ts/offer';
 
 type SortProps = {
   activeSort: string;
-  setActiveSort: React.Dispatch<React.SetStateAction<string>>;
+  setActiveSort?: React.Dispatch<React.SetStateAction<string>>;
 };
 
 type SortTypeKey = keyof typeof SortType;
@@ -26,7 +26,7 @@ export function CreateSortingOffers(activeSort: string, offers: ServerOffer[]) {
 function SortComponent({ activeSort, setActiveSort }: SortProps): JSX.Element {
   const [isOpened, setIsOpened] = useState(false);
 
-  const toggleOptions = () => {
+  const handleToggleOptions = () => {
     setIsOpened(!isOpened);
   };
 
@@ -35,7 +35,7 @@ function SortComponent({ activeSort, setActiveSort }: SortProps): JSX.Element {
       <span className="places__sorting-caption">Sort by</span>
       <span
         className="places__sorting-type"
-        onClick={toggleOptions}
+        onClick={handleToggleOptions}
         tabIndex={0}
       >
         {activeSort}
@@ -56,10 +56,11 @@ function SortComponent({ activeSort, setActiveSort }: SortProps): JSX.Element {
                 SortType[key as SortTypeKey] === activeSort,
             })}
             onClick={() => {
-              setActiveSort(SortType[key as SortTypeKey]);
-              toggleOptions();
+              setActiveSort?.(SortType[key as SortTypeKey]);
+              handleToggleOptions();
             }}
             tabIndex={0}
+            data-testid='sort-item'
           >
             {SortType[key as SortTypeKey]}
           </li>

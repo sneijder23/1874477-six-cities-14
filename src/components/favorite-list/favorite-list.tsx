@@ -41,7 +41,7 @@ function FavoriteListComponent({
   return (
     <ul className="favorites__list">
       {favoriteList.map(({ city, offers }) => (
-        <li key={city.name} className="favorites__locations-items">
+        <li key={city.name} className="favorites__locations-items" data-testid="favorite-location">
           <div className="favorites__locations locations locations--current">
             <div className="locations__item">
               <Link to="#" className="locations__item-link">

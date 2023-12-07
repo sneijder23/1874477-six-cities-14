@@ -2,7 +2,7 @@ import { memo, useEffect, useRef } from 'react';
 import leaflet from 'leaflet';
 import { useMap } from '../../hooks/map';
 import 'leaflet/dist/leaflet.css';
-import { URL_MARKER_DEFAULT, URL_MARKER_CURRENT } from '../../const';
+import { UrlMarker } from '../../const';
 import { ServerOffer } from '../../types-ts/offer';
 import { City } from '../../types-ts/city';
 import { useAppSelector } from '../../hooks/store';
@@ -17,13 +17,13 @@ type MapProps = {
 };
 
 const defaultCustomIcon = leaflet.icon({
-  iconUrl: URL_MARKER_DEFAULT,
+  iconUrl: UrlMarker.Default,
   iconSize: [27, 39],
   iconAnchor: [13, 39],
 });
 
 const currentCustomIcon = leaflet.icon({
-  iconUrl: URL_MARKER_CURRENT,
+  iconUrl: UrlMarker.Current,
   iconSize: [27, 39],
   iconAnchor: [13, 39],
 });
@@ -65,7 +65,7 @@ function MapComponent({ className, city, points, itOfferPage }: MapProps): JSX.E
       }
     }
   }, [map, points, activePoint, itOfferPage]);
-  return <section className={classNames(className, 'map')} ref={mapRef}></section>;
+  return <section className={classNames(className, 'map')} ref={mapRef} data-testid='map'></section>;
 }
 
 export const Map = memo(MapComponent);

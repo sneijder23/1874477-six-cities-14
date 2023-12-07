@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { ThunkObjType } from '../../types-ts/store';
+import { LoginData, ThunkObjType } from '../../types-ts/store';
 import { APIRoute, NameSpace } from '../../const';
-import { LoginData, ServerUser } from '../../types-ts/user';
+import { ServerUser } from '../../types-ts/user';
 import { dropToken, saveToken } from '../../services/token';
 
 export const checkAuth = createAsyncThunk<ServerUser, undefined, ThunkObjType>(

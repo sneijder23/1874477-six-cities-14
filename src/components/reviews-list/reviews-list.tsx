@@ -28,7 +28,7 @@ function ReviewsListComponent({ reviews, offerdId }: ReviewListProps): JSX.Eleme
         Reviews &middot;{' '}
         <span className="reviews__amount">{reviews.length}</span>
       </h2>
-      <ul className="reviews__list">
+      <ul className="reviews__list" data-testid="reviews-list">
         {limitReviews.map((review) => (
           <ReviewItem key={review.id} review={review} />
         ))}

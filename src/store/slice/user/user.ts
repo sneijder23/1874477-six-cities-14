@@ -37,5 +37,3 @@ export const userSlice = createSlice({
     });
   },
 });
-
-export const userFetch = { checkAuth, login, logout };

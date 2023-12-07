@@ -10,7 +10,7 @@ type OfferRatingProps = {
 function OfferRatingComponent({ className, showRatingValue, rating }: OfferRatingProps): JSX.Element {
   return (
     <div className={`${className}__rating rating`}>
-      <div className={`${className}__stars rating__stars`}>
+      <div className={`${className}__stars rating__stars`} data-testid='rating-star'>
         <span
           style={{ width: `${Math.round(rating) * 20}%` }}
         >

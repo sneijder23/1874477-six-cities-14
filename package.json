@@ -2,6 +2,8 @@
   "name": "six-cities",
   "version": "14.0.0",
   "type": "module",
+  "private": true,
+  "homepage": "https://sneijder23.github.io/1874477-six-cities-14/",
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build",

@@ -14,12 +14,9 @@ function App(): JSX.Element {
   const authorizationStatus = useAppSelector(getAuthorizationCheckedStatus);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/1874477-six-cities-14/">
       <Routes>
-        <Route
-          path={AppRoute.Root}
-          element={<Main />}
-        />
+        <Route index path={AppRoute.Root} element={<Main />} />
         <Route
           path={AppRoute.Login}
           element={

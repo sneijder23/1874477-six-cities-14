@@ -22,8 +22,8 @@ export const MAX_PICTURE_OFFER = 6;
 export const APP_NAME: string = '6 cities';
 
 export const enum UrlMarker {
-  Default = 'img/pin.svg',
-  Current = 'img/pin-active.svg'
+  Default = '../img/pin.svg',
+  Current = '../img/pin-active.svg'
 }
 
 export const TITLE_LAYER_URL =
